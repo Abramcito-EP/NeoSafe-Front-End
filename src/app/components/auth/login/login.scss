@@ -1,0 +1,273 @@
+@import 'animate.css';
+
+.login-background {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+  }
+}
+
+.login-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  display: flex;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  min-height: 500px;
+  width: 100%;
+  max-width: 800px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    max-width: 400px;
+  }
+}
+
+.brand-section {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="0,0 100,0 100,80 0,100" fill="%23ffffff" opacity="0.1"/></svg>');
+  }
+
+  .logo {
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+
+    .security-icon {
+      font-size: 48px;
+      color: #64b5f6;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .brand-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    letter-spacing: -1px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .brand-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 300;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 768px) {
+    padding: 30px 20px;
+    
+    .brand-title {
+      font-size: 2rem;
+    }
+  }
+}
+
+.form-card {
+  flex: 1;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+
+  .card-header {
+    text-align: center;
+    padding: 30px 30px 0;
+
+    .form-title {
+      color: #1e3c72;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-subtitle {
+      color: #666;
+      font-size: 0.95rem;
+    }
+  }
+
+  .card-content {
+    padding: 20px 30px;
+  }
+
+  .card-actions {
+    padding: 0 30px 30px;
+  }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  width: 100%;
+
+  .input-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    color: #1976d2;
+    font-size: 16px;
+    width: 20px;
+  }
+
+  ::ng-deep {
+    .mat-mdc-text-field-wrapper {
+      background-color: #f8f9ff;
+      border-radius: 12px;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: #e3f2fd;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #e0e6ed;
+    }
+
+    .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+    .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+    .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+      border-color: #1976d2;
+      border-width: 2px;
+    }
+
+    .mat-mdc-form-field-icon-prefix {
+      color: #1976d2;
+    }
+
+    .mat-mdc-form-field-icon-suffix {
+      color: #666;
+      
+      &:hover {
+        color: #1976d2;
+      }
+    }
+  }
+}
+
+.submit-button {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 10px;
+  position: relative;
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+  }
+
+  .button-spinner {
+    margin-right: 8px;
+  }
+
+  .button-icon {
+    margin-right: 8px;
+    font-size: 14px;
+  }
+}
+
+.register-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: #666;
+  font-size: 0.9rem;
+
+  .register-button {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #1565c0;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Animaciones personalizadas
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate__fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}

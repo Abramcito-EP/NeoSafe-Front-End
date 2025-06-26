@@ -1,1 +1,39 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@fortawesome/fontawesome-free/css/all.css';
+@import 'animate.css';
+
+/* Estilos globales */
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Estilos para iconos Font Awesome */
+.fa-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mejoras para Material Design */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-card {
+  border-radius: 12px !important;
+}
+
+/* Estilos para botones personalizados */
+.mat-mdc-raised-button {
+  border-radius: 12px !important;
+}

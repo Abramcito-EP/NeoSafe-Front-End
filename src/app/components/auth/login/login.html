@@ -1,0 +1,72 @@
+<div class="login-background">
+  <div class="login-container">
+    <div class="login-card animate__animated animate__fadeInUp">
+      <div class="brand-section">
+        <div class="logo">
+          <i class="fas fa-shield-alt security-icon"></i>
+        </div>
+        <h1 class="brand-title">NeoSafe</h1>
+        <p class="brand-subtitle">Protege tu mundo digital</p>
+      </div>
+
+      <mat-card class="form-card">
+        <mat-card-header class="card-header">
+          <mat-card-title class="form-title">Iniciar Sesión</mat-card-title>
+          <mat-card-subtitle class="form-subtitle">Accede a tu cuenta segura</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="card-content">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Correo electrónico</mat-label>
+              <input matInput formControlName="email" type="email" placeholder="ejemplo@correo.com">
+              <span matPrefix class="input-icon">
+                <i class="fas fa-envelope"></i>
+              </span>
+              <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+                El correo es obligatorio
+              </mat-error>
+              <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+                Ingrese un correo válido
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Contraseña</mat-label>
+              <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+              <span matPrefix class="input-icon">
+                <i class="fas fa-lock"></i>
+              </span>
+              <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+                <i class="fas" [class.fa-eye]="hidePassword" [class.fa-eye-slash]="!hidePassword"></i>
+              </button>
+              <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                La contraseña es obligatoria
+              </mat-error>
+              <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+                Mínimo 6 caracteres
+              </mat-error>
+            </mat-form-field>
+
+            <button mat-raised-button 
+                    color="primary" 
+                    type="submit" 
+                    class="submit-button"
+                    [disabled]="loginForm.invalid || loading">
+              <mat-spinner diameter="20" *ngIf="loading" class="button-spinner"></mat-spinner>
+              <i *ngIf="!loading" class="fas fa-sign-in-alt button-icon"></i>
+              <span *ngIf="!loading">Iniciar Sesión</span>
+            </button>
+          </form>
+        </mat-card-content>
+
+        <mat-card-actions class="card-actions">
+          <div class="register-link">
+            <span>¿No tienes cuenta?</span>
+            <a routerLink="/register" class="register-button">Crear cuenta</a>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

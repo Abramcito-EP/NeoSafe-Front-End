@@ -1,0 +1,163 @@
+<div class="register-background">
+  <div class="register-container">
+    <div class="register-card animate__animated animate__fadeInUp">
+      <div class="brand-section">
+        <div class="logo">
+          <i class="fas fa-user-plus security-icon"></i>
+        </div>
+        <h1 class="brand-title">Únete a NeoSafe</h1>
+        <p class="brand-subtitle">Crea tu cuenta en segundos</p>
+        
+        <!-- Indicador de progreso -->
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+          </div>
+          <div class="step-indicators">
+            <div class="step-indicator" [class.active]="currentStep >= 1">
+              <i class="fas fa-user"></i>
+              <span>Información Personal</span>
+            </div>
+            <div class="step-indicator" [class.active]="currentStep >= 2">
+              <i class="fas fa-key"></i>
+              <span>Credenciales</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <mat-card class="form-card">
+        <mat-card-header class="card-header">
+          <mat-card-title class="form-title">
+            {{ currentStep === 1 ? 'Información Personal' : 'Credenciales de Acceso' }}
+          </mat-card-title>
+          <mat-card-subtitle class="form-subtitle">
+            {{ currentStep === 1 ? 'Cuéntanos un poco sobre ti' : 'Configura tu acceso seguro' }}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="card-content">
+          <div class="form-container">
+            <!-- PASO 1: Información Personal -->
+            <div *ngIf="currentStep === 1" @slideInOut class="step-form">
+              <form [formGroup]="step1Form" class="register-form">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Nombre</mat-label>
+                  <input matInput formControlName="name" placeholder="Tu nombre">
+                  <span matPrefix class="input-icon">
+                    <i class="fas fa-user"></i>
+                  </span>
+                  <mat-error *ngIf="step1Form.get('name')?.hasError('required')">
+                    El nombre es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="step1Form.get('name')?.hasError('minlength')">
+                    Mínimo 2 caracteres
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Apellido</mat-label>
+                  <input matInput formControlName="lastName" placeholder="Tu apellido">
+                  <span matPrefix class="input-icon">
+                    <i class="fas fa-user-tag"></i>
+                  </span>
+                  <mat-error *ngIf="step1Form.get('lastName')?.hasError('required')">
+                    El apellido es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="step1Form.get('lastName')?.hasError('minlength')">
+                    Mínimo 2 caracteres
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Fecha de nacimiento (opcional)</mat-label>
+                  <input matInput [matDatepicker]="picker" formControlName="birthDate">
+                  <span matPrefix class="input-icon">
+                    <i class="fas fa-birthday-cake"></i>
+                  </span>
+                  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <mat-hint>Opcional: nos ayuda a personalizar tu experiencia</mat-hint>
+                </mat-form-field>
+
+                <button mat-raised-button 
+                        color="primary" 
+                        type="button"
+                        class="step-button"
+                        [disabled]="step1Form.invalid"
+                        (click)="nextStep()">
+                  <span>Siguiente</span>
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </form>
+            </div>
+
+            <!-- PASO 2: Credenciales -->
+            <div *ngIf="currentStep === 2" @slideInOut class="step-form">
+              <form [formGroup]="step2Form" (ngSubmit)="onSubmit()" class="register-form">
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Correo electrónico</mat-label>
+                  <input matInput formControlName="email" type="email" placeholder="ejemplo@correo.com">
+                  <span matPrefix class="input-icon">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                  <mat-error *ngIf="step2Form.get('email')?.hasError('required')">
+                    El correo es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="step2Form.get('email')?.hasError('email')">
+                    Ingrese un correo válido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                  <mat-label>Contraseña</mat-label>
+                  <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+                  <span matPrefix class="input-icon">
+                    <i class="fas fa-lock"></i>
+                  </span>
+                  <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+                    <i class="fas" [class.fa-eye]="hidePassword" [class.fa-eye-slash]="!hidePassword"></i>
+                  </button>
+                  <mat-error *ngIf="step2Form.get('password')?.hasError('required')">
+                    La contraseña es obligatoria
+                  </mat-error>
+                  <mat-error *ngIf="step2Form.get('password')?.hasError('minlength')">
+                    Mínimo 6 caracteres
+                  </mat-error>
+                  <mat-hint>Debe tener al menos 6 caracteres</mat-hint>
+                </mat-form-field>
+
+                <div class="button-group">
+                  <button mat-button 
+                          type="button"
+                          class="back-button"
+                          (click)="previousStep()">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Atrás</span>
+                  </button>
+
+                  <button mat-raised-button 
+                          color="primary" 
+                          type="submit"
+                          class="submit-button"
+                          [disabled]="step2Form.invalid || loading">
+                    <mat-spinner diameter="20" *ngIf="loading" class="button-spinner"></mat-spinner>
+                    <i *ngIf="!loading" class="fas fa-check"></i>
+                    <span *ngIf="!loading">Crear Cuenta</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions class="card-actions">
+          <div class="login-link">
+            <span>¿Ya tienes cuenta?</span>
+            <a routerLink="/login" class="login-button">Iniciar sesión</a>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>
