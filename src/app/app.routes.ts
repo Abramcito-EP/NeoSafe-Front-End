@@ -18,12 +18,12 @@ export const routes: Routes = [
   },
   { 
     path: '', 
-    redirectTo: '/login', 
-    pathMatch: 'full' 
+    loadComponent: () => import('./components/home/home').then(c => c.HomeComponent)
   },
   {
     path: '**',
-    redirectTo: '/login'
+    redirectTo: '',
+    pathMatch: 'full'
   }
 ];
 
