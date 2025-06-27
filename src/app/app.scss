@@ -1,0 +1,5 @@
+.app-container {
+  min-height: calc(100vh - 64px); /* Para restar la altura del navbar */
+  position: relative;
+  overflow-x: hidden;
+}

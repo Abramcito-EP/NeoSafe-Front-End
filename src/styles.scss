@@ -1,4 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Directivas de Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos existentes */
 @import '@fortawesome/fontawesome-free/css/all.css';
 @import 'animate.css';
 

@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
+
 export class HomeComponent {
   title = 'NeoSafe';
 }

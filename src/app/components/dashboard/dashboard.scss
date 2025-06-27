@@ -5,57 +5,41 @@
   flex-direction: column;
 }
 
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.connection-status-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+}
 
-  .toolbar-title {
-    font-size: 1.5rem;
-    font-weight: 600;
+.connection-status {
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+
+  i {
+    margin-right: 6px;
+    font-size: 0.8rem;
+  }
+
+  &.connected {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
     
     i {
-      margin-right: 8px;
-      color: #FFD700;
-    }
-  }
-
-  .spacer {
-    flex: 1 1 auto;
-  }
-
-  .connection-status {
-    display: flex;
-    align-items: center;
-    margin-right: 16px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-
-    i {
-      margin-right: 6px;
-      font-size: 0.8rem;
-    }
-
-    &.connected {
-      background-color: rgba(76, 175, 80, 0.2);
       color: #4CAF50;
-      
-      i {
-        color: #4CAF50;
-        animation: pulse 2s infinite;
-      }
+      animation: pulse 2s infinite;
     }
+  }
 
-    &.disconnected {
-      background-color: rgba(244, 67, 54, 0.2);
+  &.disconnected {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: #F44336;
+    
+    i {
       color: #F44336;
-      
-      i {
-        color: #F44336;
-      }
     }
   }
 }

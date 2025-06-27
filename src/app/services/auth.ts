@@ -73,6 +73,18 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  // Método público para limpiar la sesión
+  clearSession(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.currentUserSubject.next(null);
+    console.log('Sesión limpiada localmente');
+  }
+
   private setSession(authResult: AuthResponse): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -81,16 +93,6 @@ export class AuthService {
     localStorage.setItem('token', authResult.token);
     localStorage.setItem('user', JSON.stringify(authResult.user));
     this.currentUserSubject.next(authResult.user);
-  }
-
-  private clearSession(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-    
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.currentUserSubject.next(null);
   }
 
   private getUserFromLocalStorage(): User | null {

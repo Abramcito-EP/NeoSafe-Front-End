@@ -1,0 +1,104 @@
+<mat-toolbar color="primary" class="navbar">
+  <div class="navbar-container">
+    <!-- Logo y título -->
+    <a routerLink="/" class="logo-container">
+      <i class="fas fa-shield-alt logo-icon"></i>
+      <span class="logo-text">NeoSafe</span>
+    </a>
+
+    <!-- Espaciador -->
+    <span class="spacer"></span>
+
+    <!-- Links de navegación para escritorio -->
+    <div class="nav-links hide-on-mobile">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" mat-button>
+        <i class="fas fa-home"></i> Inicio
+      </a>
+      <ng-container *ngIf="isLoggedIn">
+        <a routerLink="/dashboard" routerLinkActive="active-link" mat-button>
+          <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+      </ng-container>
+    </div>
+
+    <!-- Botones de autenticación para escritorio -->
+    <div class="auth-buttons hide-on-mobile">
+      <ng-container *ngIf="!isLoggedIn">
+        <a routerLink="/login" mat-button class="login-btn">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </a>
+        <a routerLink="/register" mat-raised-button color="accent" class="register-btn">
+          <i class="fas fa-user-plus"></i> Registrarse
+        </a>
+      </ng-container>
+
+      <!-- Menú de usuario para escritorio -->
+      <ng-container *ngIf="isLoggedIn">
+        <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
+          <i class="fas fa-user-circle"></i>
+          <span class="username">{{ (currentUser$ | async)?.name }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <mat-menu #userMenu="matMenu" xPosition="before" class="user-menu">
+          <div class="user-info" *ngIf="currentUser$ | async as user">
+            <div class="user-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="user-details">
+              <strong>{{ user.name }} {{ user.lastName }}</strong>
+              <small>{{ user.email }}</small>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <a mat-menu-item routerLink="/dashboard">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+          <a mat-menu-item routerLink="/profile">
+            <i class="fas fa-user-cog"></i>
+            <span>Mi Perfil</span>
+          </a>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar Sesión</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+    </div>
+
+    <!-- Botón de menú mobile -->
+    <button mat-icon-button [matMenuTriggerFor]="mobileMenu" class="mobile-menu-button show-on-mobile">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Menú móvil -->
+    <mat-menu #mobileMenu="matMenu" class="mobile-menu">
+      <a mat-menu-item routerLink="/">
+        <i class="fas fa-home"></i> Inicio
+      </a>
+      
+      <ng-container *ngIf="isLoggedIn">
+        <a mat-menu-item routerLink="/dashboard">
+          <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+        <a mat-menu-item routerLink="/profile">
+          <i class="fas fa-user-cog"></i> Mi Perfil
+        </a>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        </button>
+      </ng-container>
+      
+      <ng-container *ngIf="!isLoggedIn">
+        <a mat-menu-item routerLink="/login">
+          <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+        </a>
+        <a mat-menu-item routerLink="/register">
+          <i class="fas fa-user-plus"></i> Registrarse
+        </a>
+      </ng-container>
+    </mat-menu>
+  </div>
+</mat-toolbar>
