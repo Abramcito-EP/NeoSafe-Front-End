@@ -59,6 +59,20 @@ export class AuthService {
     return !!(token && user);
   }
 
+  // Método getToken agregado
+  getToken(): string | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+    
+    return localStorage.getItem('token');
+  }
+
+  // Método para obtener el usuario actual (útil para otros servicios)
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
   private setSession(authResult: AuthResponse): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;

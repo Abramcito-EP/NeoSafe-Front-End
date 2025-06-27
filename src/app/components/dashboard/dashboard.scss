@@ -1,5 +1,6 @@
 .dashboard-container {
-  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   flex-direction: column;
 }
@@ -9,70 +10,66 @@
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
-.toolbar-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 500;
-  
-  i {
-    font-size: 24px;
-    color: #64b5f6;
+  .toolbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    
+    i {
+      margin-right: 8px;
+      color: #FFD700;
+    }
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .connection-status {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+
+    i {
+      margin-right: 6px;
+      font-size: 0.8rem;
+    }
+
+    &.connected {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+      
+      i {
+        color: #4CAF50;
+        animation: pulse 2s infinite;
+      }
+    }
+
+    &.disconnected {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: #F44336;
+      
+      i {
+        color: #F44336;
+      }
+    }
   }
 }
 
-.spacer {
-  flex: 1;
-}
-
-// Estilos para el botón del menú de usuario
-button[mat-icon-button] {
-  i {
-    font-size: 24px;
-    color: white;
-  }
-}
-
-.user-info {
-  padding: 16px !important;
-  cursor: default !important;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  
-  strong {
-    font-size: 14px;
-  }
-  
-  small {
-    color: rgba(0,0,0,0.6);
-    font-size: 12px;
-  }
-}
-
-// Estilos para items del menú
-button[mat-menu-item] {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  
-  i {
-    font-size: 16px;
-    color: #666;
-    width: 16px;
-  }
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
 }
 
 .main-content {
-  flex: 1;
   padding: 24px;
-  background-color: #f5f5f5;
-  overflow-y: auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .welcome-section {
@@ -80,74 +77,165 @@ button[mat-menu-item] {
   margin-bottom: 32px;
   
   h1 {
-    color: #1976d2;
-    margin-bottom: 8px;
-    font-weight: 400;
+    color: white;
     font-size: 2.5rem;
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   }
   
   p {
-    color: rgba(0,0,0,0.6);
-    font-size: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+}
+
+.sensors-section {
+  margin-bottom: 32px;
+  
+  h2 {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    
+    i {
+      margin-right: 12px;
+      color: #FFD700;
+    }
+  }
+}
+
+.sensors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.sensor-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .sensor-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: white;
+
+    &.temperature-avatar {
+      background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+    }
+
+    &.humidity-avatar {
+      background: linear-gradient(45deg, #4ECDC4, #44A08D);
+    }
+
+    &.weight-avatar {
+      background: linear-gradient(45deg, #A8EDEA, #FED6E3);
+      color: #666;
+    }
+  }
+
+  .sensor-value {
+    display: flex;
+    align-items: baseline;
+    margin: 16px 0;
+
+    .value {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #333;
+      margin-right: 8px;
+    }
+
+    .unit {
+      font-size: 1.2rem;
+      color: #666;
+      font-weight: 500;
+    }
+  }
+
+  .sensor-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    color: #999;
+    font-size: 0.9rem;
+
+    i {
+      margin-right: 6px;
+      font-size: 0.7rem;
+    }
+
+    &.active {
+      color: #4CAF50;
+      
+      i {
+        color: #4CAF50;
+        animation: pulse 2s infinite;
+      }
+    }
+  }
+
+  .last-update {
+    font-size: 0.8rem;
+    color: #999;
+    font-style: italic;
   }
 }
 
 .user-profile-section {
-  max-width: 800px;
-  margin: 0 auto 32px;
+  margin-bottom: 32px;
 }
 
 .profile-card {
-  .mat-card-header {
-    .mat-card-title {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  .profile-info {
+    .info-item {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      
-      i {
-        font-size: 24px;
-        color: #1976d2;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      strong {
+        color: #333;
+        font-weight: 600;
+      }
+
+      span {
+        color: #666;
       }
     }
   }
 }
 
-.profile-info {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
-  
-  &:last-child {
-    border-bottom: none;
-  }
-  
-  strong {
-    color: rgba(0,0,0,0.87);
-    font-weight: 500;
-  }
-  
-  span {
-    color: rgba(0,0,0,0.6);
-  }
-}
-
 .features-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  
   h2 {
-    text-align: center;
+    color: white;
+    font-size: 1.8rem;
     margin-bottom: 24px;
-    color: #333;
-    font-size: 2rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
   }
 }
 
@@ -158,32 +246,40 @@ button[mat-menu-item] {
 }
 
 .feature-card {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
-  
-  .mat-card-header {
-    .mat-card-title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #1976d2;
-      
-      i {
-        font-size: 24px;
-        color: #1976d2;
-      }
+
+  mat-card-title {
+    color: #333;
+    
+    i {
+      margin-right: 8px;
+      color: #667eea;
     }
   }
-  
-  .mat-card-content {
-    p {
-      color: rgba(0,0,0,0.6);
-      margin: 0;
-      line-height: 1.6;
+}
+
+.user-menu {
+  .user-info {
+    padding: 16px;
+    
+    .user-details {
+      strong {
+        display: block;
+        color: #333;
+        margin-bottom: 4px;
+      }
+      
+      small {
+        color: #666;
+      }
     }
   }
 }
@@ -193,20 +289,22 @@ button[mat-menu-item] {
   .main-content {
     padding: 16px;
   }
-  
+
+  .welcome-section h1 {
+    font-size: 2rem;
+  }
+
+  .sensors-grid {
+    grid-template-columns: 1fr;
+  }
+
   .features-grid {
     grid-template-columns: 1fr;
   }
-  
-  .info-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  
-  .welcome-section {
-    h1 {
-      font-size: 2rem;
-    }
-  }
+}
+
+// Clases para snackbar
+::ng-deep .success-snackbar {
+  background: #4CAF50 !important;
+  color: white !important;
 }
