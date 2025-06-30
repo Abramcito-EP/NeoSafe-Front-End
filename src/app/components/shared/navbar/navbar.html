@@ -1,13 +1,13 @@
-<mat-toolbar color="primary" class="navbar">
-  <div class="navbar-container">
+<mat-toolbar class="navbar p-0 bg-gradient-purple">
+  <div class="flex items-center w-full max-w-7xl mx-auto px-4 h-16">
     <!-- Logo y título -->
     <a routerLink="/" class="logo-container">
-      <i class="fas fa-shield-alt logo-icon"></i>
+      <i class="fas fa-vault logo-icon"></i>
       <span class="logo-text">NeoSafe</span>
     </a>
 
     <!-- Espaciador -->
-    <span class="spacer"></span>
+    <div class="flex-1"></div>
 
     <!-- Links de navegación para escritorio -->
     <div class="nav-links hide-on-mobile">
@@ -17,6 +17,12 @@
       <ng-container *ngIf="isLoggedIn">
         <a routerLink="/dashboard" routerLinkActive="active-link" mat-button>
           <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+        <a routerLink="/safes" routerLinkActive="active-link" mat-button>
+          <i class="fas fa-lock"></i> Mis Cajas
+        </a>
+        <a routerLink="/stats" routerLinkActive="active-link" mat-button>
+          <i class="fas fa-chart-bar"></i> Estadísticas
         </a>
       </ng-container>
     </div>
@@ -36,7 +42,7 @@
       <ng-container *ngIf="isLoggedIn">
         <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
           <i class="fas fa-user-circle"></i>
-          <span class="username">{{ (currentUser$ | async)?.name }}</span>
+          <span class="username">{{ (currentUser$ | async)?.name || 'Usuario' }}</span>
           <i class="fas fa-chevron-down"></i>
         </button>
         <mat-menu #userMenu="matMenu" xPosition="before" class="user-menu">
@@ -53,6 +59,10 @@
           <a mat-menu-item routerLink="/dashboard">
             <i class="fas fa-tachometer-alt"></i>
             <span>Dashboard</span>
+          </a>
+          <a mat-menu-item routerLink="/safes">
+            <i class="fas fa-lock"></i>
+            <span>Mis Cajas</span>
           </a>
           <a mat-menu-item routerLink="/profile">
             <i class="fas fa-user-cog"></i>
@@ -82,6 +92,12 @@
         <a mat-menu-item routerLink="/dashboard">
           <i class="fas fa-chart-line"></i> Dashboard
         </a>
+        <a mat-menu-item routerLink="/safes">
+          <i class="fas fa-lock"></i> Mis Cajas
+        </a>
+        <a mat-menu-item routerLink="/stats">
+          <i class="fas fa-chart-bar"></i> Estadísticas
+        </a>
         <a mat-menu-item routerLink="/profile">
           <i class="fas fa-user-cog"></i> Mi Perfil
         </a>
@@ -100,5 +116,8 @@
         </a>
       </ng-container>
     </mat-menu>
+
+    <!-- Efecto de resplandor -->
+    <div class="navbar-glow"></div>
   </div>
 </mat-toolbar>

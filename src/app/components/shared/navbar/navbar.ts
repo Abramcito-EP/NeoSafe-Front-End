@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth';
 import { User } from '../../../models/user.model';
 import { Observable } from 'rxjs';
 
+import { Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 // Imports de Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,19 +32,33 @@ import { MatDividerModule } from '@angular/material/divider';
 export class NavbarComponent implements OnInit {
   currentUser$: Observable<User | null>;
   isLoggedIn = false;
+  isScrolled = false;
+  currentYear = new Date().getFullYear();
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.currentUser$ = this.authService.currentUser$;
   }
 
   ngOnInit(): void {
-    // Actualizar estado de autenticación
     this.currentUser$.subscribe(user => {
       this.isLoggedIn = !!user;
     });
+
+    if (isPlatformBrowser(this.platformId)) {
+      document.title = 'NeoSafe | Control Inteligente de Cajas Fuertes';
+    }
+  }
+  
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    // Detectar scroll para efectos visuales adicionales
+    if (isPlatformBrowser(this.platformId)) {
+      this.isScrolled = window.scrollY > 50;
+    }
   }
 
   logout(): void {

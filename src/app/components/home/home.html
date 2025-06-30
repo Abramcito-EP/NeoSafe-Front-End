@@ -1,29 +1,190 @@
-<main class="main">
-  <div class="content">
-    <div class="left-side">
-      <h1>Bienvenido a NeoSafe</h1>
-      <p>Tu plataforma de seguridad digital de confianza</p>
-      <div class="actions">
-        <a routerLink="/login" class="action-button login">Iniciar sesión</a>
-        <a routerLink="/register" class="action-button register">Registrarse</a>
+<main class="min-h-screen bg-dark-bg text-dark-text">
+  <!-- Hero Section -->
+  <div class="relative w-full py-16 bg-gradient-purple overflow-hidden rounded-b-[100px]">
+    <div class="absolute inset-0 pattern-overlay"></div>
+    <div class="relative max-w-7xl mx-auto px-4 text-center z-10">
+      <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-4 animate-fadeInUp">
+        NeoSafe: <span class="relative inline-block">
+          <span class="relative z-10">Control inteligente</span>
+          <span class="absolute bottom-1 left-0 w-full h-3 bg-purple-vibrant opacity-30 -rotate-1 skew-x-12"></span>
+        </span> de cajas fuertes
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto mb-8 opacity-0 animate-fadeInUp delay-1">
+        Una solución innovadora para el registro y control de cajas fuertes con tecnología de vanguardia. Acceso remoto seguro y monitorización avanzada.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 opacity-0 animate-fadeInUp delay-2">
+        <a routerLink="/login" class="px-6 py-3 rounded-full bg-purple-vibrant text-white font-semibold flex items-center justify-center min-w-40 transform transition-all hover:bg-opacity-90 hover:-translate-y-1 hover:shadow-purple-glow">
+          <i class="fas fa-lock-open mr-2"></i> Iniciar sesión
+        </a>
+        <a routerLink="/register" class="px-6 py-3 rounded-full bg-dark-card text-white font-semibold border-2 border-purple-vibrant flex items-center justify-center min-w-40 transform transition-all hover:bg-dark-surface hover:-translate-y-1">
+          <i class="fas fa-user-plus mr-2"></i> Registrarse
+        </a>
       </div>
     </div>
-    <div class="divider" role="separator" aria-label="Divider"></div>
-    <div class="right-side">
-      <div class="pill-group">
-        <div class="pill">
-          <span>Seguridad avanzada</span>
+  </div>
+
+  <!-- Features Section -->
+  <div class="max-w-7xl mx-auto px-4 py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 feature-grid">
+      <div class="bg-dark-card rounded-xl p-6 shadow-dark-lg border border-dark-border transform transition-all hover:-translate-y-2 hover:shadow-purple-glow opacity-0 animate-fadeInUp" style="--order: 1; animation-delay: 0.1s;">
+        <div class="w-16 h-16 bg-dark-surface rounded-full flex items-center justify-center mb-6 transform transition-all group-hover:scale-110">
+          <i class="fas fa-lock text-2xl text-purple-vibrant animate-glow"></i>
         </div>
-        <div class="pill">
-          <span>Fácil de usar</span>
+        <h3 class="text-xl font-bold mb-3 text-purple-light">Control Remoto</h3>
+        <p class="text-dark-text-secondary">Abre y gestiona tus cajas fuertes de forma remota desde cualquier lugar. Acceso seguro mediante autenticación de doble factor y registros detallados de cada operación.</p>
+      </div>
+      
+      <div class="bg-dark-card rounded-xl p-6 shadow-dark-lg border border-dark-border transform transition-all hover:-translate-y-2 hover:shadow-purple-glow opacity-0 animate-fadeInUp" style="--order: 2; animation-delay: 0.2s;">
+        <div class="w-16 h-16 bg-dark-surface rounded-full flex items-center justify-center mb-6">
+          <i class="fas fa-chart-line text-2xl text-purple-vibrant animate-glow"></i>
         </div>
-        <div class="pill">
-          <span>Protección de datos</span>
+        <h3 class="text-xl font-bold mb-3 text-purple-light">Estadísticas Avanzadas</h3>
+        <p class="text-dark-text-secondary">Monitoriza en tiempo real todos los datos de los sensores integrados para una seguridad óptima. Visualiza tendencias de uso y alertas en dashboards personalizables.</p>
+      </div>
+      
+      <div class="bg-dark-card rounded-xl p-6 shadow-dark-lg border border-dark-border transform transition-all hover:-translate-y-2 hover:shadow-purple-glow opacity-0 animate-fadeInUp" style="--order: 3; animation-delay: 0.3s;">
+        <div class="w-16 h-16 bg-dark-surface rounded-full flex items-center justify-center mb-6">
+          <i class="fas fa-shield-alt text-2xl text-purple-vibrant animate-glow"></i>
         </div>
-        <div class="pill">
-          <span>Soporte 24/7</span>
+        <h3 class="text-xl font-bold mb-3 text-purple-light">Seguridad Garantizada</h3>
+        <p class="text-dark-text-secondary">Tecnología de cifrado de última generación que protege el acceso a tus cajas fuertes. Implementamos protocolos de seguridad bancaria y certificaciones internacionales.</p>
+      </div>
+      
+      <div class="bg-dark-card rounded-xl p-6 shadow-dark-lg border border-dark-border transform transition-all hover:-translate-y-2 hover:shadow-purple-glow opacity-0 animate-fadeInUp" style="--order: 4; animation-delay: 0.4s;">
+        <div class="w-16 h-16 bg-dark-surface rounded-full flex items-center justify-center mb-6">
+          <i class="fas fa-bell text-2xl text-purple-vibrant animate-glow"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-purple-light">Alertas Instantáneas</h3>
+        <p class="text-dark-text-secondary">Recibe notificaciones inmediatas sobre cualquier actividad inusual en tus cajas fuertes. Configuración personalizada de alertas por email, SMS o notificaciones push.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <div class="bg-dark-surface py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row gap-12 items-center about-flex">
+        <div class="w-full md:w-1/2 opacity-0 animate-fadeInUp">
+          <div class="relative rounded-xl overflow-hidden shadow-dark-lg">
+            <img src="https://thumbs.dreamstime.com/b/l%C3%ADnea-fina-icono-de-la-caja-seguridad-fuerte-y-muestra-gr%C3%A1ficos-vector-un-modelo-linear-en-fondo-blanco-137248787.jpg" alt="NeoSafe Dispositivo" class="w-full h-auto transition-all hover:scale-105"
+                 onerror="this.src='https://via.placeholder.com/500x300/2D1B69/F0F0F0?text=NeoSafe+Device'">
+            <div class="absolute -bottom-2 -right-2 w-24 h-24 bg-gradient-purple rounded-full opacity-30 blur-md"></div>
+          </div>
+        </div>
+        <div class="w-full md:w-1/2 opacity-0 animate-fadeInUp delay-2">
+          <h2 class="text-3xl font-bold mb-6 text-purple-light relative inline-block">
+            La Nueva Era en Seguridad de Cajas Fuertes
+            <span class="absolute -bottom-2 left-0 w-1/3 h-1 bg-gradient-purple"></span>
+          </h2>
+          <p class="text-dark-text mb-4">NeoSafe representa la evolución de la seguridad tradicional hacia la era digital. Nuestro sistema integra hardware de alta calidad con software inteligente, permitiendo una gestión completa de tu caja fuerte desde cualquier dispositivo.</p>
+          <p class="text-dark-text mb-4">Cada caja está equipada con múltiples sensores que monitorizan:</p>
+          <ul class="mb-6 space-y-3">
+            <li class="flex items-start">
+              <i class="fas fa-temperature-high text-purple-vibrant mr-3 mt-1"></i>
+              <span>Temperatura interna</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-tint text-purple-vibrant mr-3 mt-1"></i>
+              <span>Niveles de humedad</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-bolt text-purple-vibrant mr-3 mt-1"></i>
+              <span>Vibraciones e impactos</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-door-open text-purple-vibrant mr-3 mt-1"></i>
+              <span>Estados de apertura y cierre</span>
+            </li>
+          </ul>
+          <p class="text-dark-text">La información de estos sensores es procesada en tiempo real, generando estadísticas útiles y alertas relevantes para asegurar que tus objetos de valor están siempre protegidos.</p>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- How It Works Section -->
+  <div class="py-20 bg-dark-bg">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-16 relative inline-block opacity-0 animate-fadeInUp">
+        <span class="text-purple-light">¿Cómo Funciona NeoSafe?</span>
+        <span class="block absolute w-32 h-1 bg-gradient-purple left-1/2 transform -translate-x-1/2 bottom-0"></span>
+      </h2>
+      
+      <div class="flex flex-wrap justify-center gap-8">
+        <div class="w-full sm:w-72 text-center mb-12 opacity-0 animate-fadeInUp delay-1 relative">
+          <div class="absolute top-10 left-[calc(100%+1rem)] w-24 h-0.5 bg-purple-light hidden lg:block"></div>
+          <div class="flex items-center justify-center w-16 h-16 rounded-full bg-purple-vibrant mx-auto mb-6 relative animate-pulse">
+            <span class="text-white text-xl font-bold">1</span>
+          </div>
+          <div class="w-20 h-20 bg-dark-surface rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all hover:rotate-y-180">
+            <i class="fas fa-box-open text-3xl text-purple-vibrant"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-purple-light">Instala tu dispositivo</h3>
+          <p class="text-dark-text-secondary">Conecta tu caja fuerte al dispositivo NeoSafe mediante nuestra interfaz plug-and-play. No se requieren conocimientos técnicos.</p>
+        </div>
+        
+        <div class="w-full sm:w-72 text-center mb-12 opacity-0 animate-fadeInUp delay-2 relative">
+          <div class="absolute top-10 left-[calc(100%+1rem)] w-24 h-0.5 bg-purple-light hidden lg:block"></div>
+          <div class="flex items-center justify-center w-16 h-16 rounded-full bg-purple-vibrant mx-auto mb-6 relative animate-pulse">
+            <span class="text-white text-xl font-bold">2</span>
+          </div>
+          <div class="w-20 h-20 bg-dark-surface rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all hover:rotate-y-180">
+            <i class="fas fa-mobile-alt text-3xl text-purple-vibrant"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-purple-light">Configura la app</h3>
+          <p class="text-dark-text-secondary">Descarga la aplicación NeoSafe, crea una cuenta y vincula tu dispositivo mediante el código QR incluido.</p>
+        </div>
+        
+        <div class="w-full sm:w-72 text-center mb-12 opacity-0 animate-fadeInUp delay-3 relative">
+          <div class="absolute top-10 left-[calc(100%+1rem)] w-24 h-0.5 bg-purple-light hidden lg:block"></div>
+          <div class="flex items-center justify-center w-16 h-16 rounded-full bg-purple-vibrant mx-auto mb-6 relative animate-pulse">
+            <span class="text-white text-xl font-bold">3</span>
+          </div>
+          <div class="w-20 h-20 bg-dark-surface rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all hover:rotate-y-180">
+            <i class="fas fa-cogs text-3xl text-purple-vibrant"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-purple-light">Personaliza tus ajustes</h3>
+          <p class="text-dark-text-secondary">Configura los parámetros de seguridad, establece niveles de acceso y personaliza las notificaciones según tus necesidades.</p>
+        </div>
+        
+        <div class="w-full sm:w-72 text-center mb-12 opacity-0 animate-fadeInUp delay-4">
+          <div class="flex items-center justify-center w-16 h-16 rounded-full bg-purple-vibrant mx-auto mb-6 relative animate-pulse">
+            <span class="text-white text-xl font-bold">4</span>
+          </div>
+          <div class="w-20 h-20 bg-dark-surface rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all hover:rotate-y-180">
+            <i class="fas fa-check-circle text-3xl text-purple-vibrant"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3 text-purple-light">Control total</h3>
+          <p class="text-dark-text-secondary">Gestiona tu caja fuerte desde cualquier lugar y mantén un control completo sobre tus objetos de valor.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="relative py-20 bg-gradient-purple overflow-hidden">
+    <div class="absolute top-0 left-0 w-64 h-64 bg-purple-dark rounded-full opacity-20 blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-purple-light rounded-full opacity-10 blur-3xl"></div>
+    
+    <div class="max-w-3xl mx-auto px-4 text-center relative z-10 opacity-0 animate-fadeInUp">
+      <h2 class="text-4xl font-bold text-white mb-4">Comienza a proteger tus bienes con tecnología de vanguardia</h2>
+      <p class="text-xl text-gray-200 mb-8">Únete a miles de usuarios que confían en NeoSafe para la gestión inteligente de sus cajas fuertes.</p>
+      <div class="flex flex-wrap justify-center gap-6 cta-buttons">
+        <a routerLink="/register" class="px-8 py-4 rounded-full bg-dark-card text-white font-bold flex items-center justify-center min-w-52 transform transition-all hover:scale-105 hover:shadow-purple-glow hover:-translate-y-1 text-lg">
+          <i class="fas fa-rocket mr-3"></i> Comenzar Ahora
+        </a>
+        <a routerLink="/contact" class="px-8 py-4 rounded-full bg-transparent text-white font-bold border-2 border-white flex items-center justify-center min-w-52 transform transition-all hover:bg-white/10 hover:-translate-y-1 text-lg">
+          <i class="fas fa-headset mr-3"></i> Solicitar Demo
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating elements -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <i class="fas fa-vault fa-3x absolute top-1/4 left-1/4 text-purple-dark opacity-5 animate-float"></i>
+    <i class="fas fa-shield-alt fa-3x absolute top-1/3 right-1/4 text-purple-vibrant opacity-5 animate-float" style="animation-delay: 2s;"></i>
+    <i class="fas fa-lock fa-3x absolute bottom-1/4 left-1/3 text-purple-light opacity-5 animate-float" style="animation-delay: 4s;"></i>
+    <i class="fas fa-key fa-3x absolute bottom-1/3 right-1/3 text-purple-dark opacity-5 animate-float" style="animation-delay: 6s;"></i>
   </div>
 </main>

@@ -1,197 +1,267 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --purple-dark: #2d1b69;
+  --purple-vibrant: #9c27b0;
+  --purple-light: #ba68c8;
+  --dark-bg: #121212;
+  --dark-card: #1E1E1E;
+  --dark-surface: #242424;
+  --dark-border: #333333;
+  --dark-text: #E0E0E0;
+  --dark-text-secondary: #A0A0A0;
+}
+
 .navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  padding: 0;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  @apply bg-dark-card sticky top-0 z-50 m-0 p-0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .navbar-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-  height: 64px;
+  @apply bg-gradient-to-r from-dark-bg via-dark-surface to-dark-bg border-b border-dark-border;
+  position: relative;
+  overflow: hidden;
+}
+
+.navbar-container::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-r from-purple-dark/30 via-purple-vibrant/20 to-purple-dark/30 opacity-30;
+  z-index: 0;
+}
+
+.navbar-glow {
+  @apply absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-vibrant to-transparent;
+  filter: blur(1px);
+  animation: glow 4s infinite linear;
+}
+
+.navbar-content {
+  @apply flex items-center w-full max-w-7xl mx-auto px-4 h-16 relative z-10;
 }
 
 .logo-container {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: white;
-  padding: 0 8px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
+  @apply flex items-center text-white no-underline px-3 py-2 rounded-full transition-all duration-300 hover:bg-white/5 hover:scale-105 hover:shadow-lg hover:shadow-purple-vibrant/20;
 }
 
 .logo-icon {
-  font-size: 24px;
-  color: #FFD700;
-  margin-right: 12px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  @apply text-2xl text-purple-light mr-3 filter drop-shadow;
+  text-shadow: 0 0 10px rgba(186, 104, 200, 0.5);
+  animation: pulse 3s infinite alternate;
 }
 
 .logo-text {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.spacer {
-  flex: 1 1 auto;
+  @apply text-xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-light;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .nav-links {
-  display: flex;
-  margin-right: 16px;
+  @apply flex mr-4;
+}
 
-  a {
-    margin: 0 4px;
-    position: relative;
-    color: rgba(255, 255, 255, 0.85);
-    
+.nav-links a {
+  @apply mx-1 relative text-white/80 transition-all duration-300 rounded-full px-4 py-2 hover:text-white hover:bg-white/5;
+}
+
+.nav-links a i {
+  @apply mr-2 text-purple-light transition-colors duration-300;
+}
+
+.nav-links a:hover i {
+  @apply text-purple-vibrant;
+}
+
+.nav-links a.active-link {
+  @apply text-white bg-dark-surface/80 shadow-inner;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-links a.active-link::after {
+  content: '';
+  @apply absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2/3 h-0.5 bg-gradient-to-r from-purple-dark via-purple-vibrant to-purple-light rounded-full;
+  filter: drop-shadow(0 0 3px rgba(156, 39, 176, 0.5));
+}
+
+.auth-buttons {
+  @apply flex items-center gap-3;
+}
+
+.login-btn {
+  @apply text-white/90 bg-dark-surface/80 rounded-full px-4 py-1.5 transition-all duration-300 border border-dark-border hover:text-white hover:bg-dark-surface hover:border-purple-light/50 hover:-translate-y-0.5 hover:shadow-md hover:shadow-purple-vibrant/20;
+}
+
+.login-btn i {
+  @apply mr-2 text-purple-light transition-colors duration-300;
+}
+
+.login-btn:hover i {
+  @apply text-purple-vibrant;
+}
+
+.register-btn {
+  @apply bg-gradient-to-r from-purple-dark to-purple-vibrant text-white rounded-full px-4 py-1.5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-vibrant/30 hover:-translate-y-0.5 hover:brightness-110 border border-purple-light/20;
+}
+
+.register-btn i {
+  @apply mr-2 text-white/90;
+}
+
+.user-menu-trigger {
+  @apply px-4 py-1.5 rounded-full bg-dark-surface/80 border border-dark-border text-white/90 transition-all duration-300 hover:bg-dark-surface hover:border-purple-light/50 hover:-translate-y-0.5 hover:shadow-md hover:shadow-purple-vibrant/20;
+  display: flex;
+  align-items: center;
+}
+
+.user-menu-trigger i.fa-user-circle {
+  @apply text-lg mr-2 text-purple-light;
+}
+
+.user-menu-trigger .username {
+  @apply mr-2;
+}
+
+.user-menu-trigger i.fa-chevron-down {
+  @apply text-xs text-purple-light/80;
+}
+
+.user-menu-trigger:hover i {
+  @apply text-purple-vibrant;
+}
+
+// Mobile menu styles
+.mobile-menu-button {
+  @apply w-10 h-10 flex items-center justify-center rounded-full bg-dark-surface/80 border border-dark-border text-white/90 transition-all duration-300 hover:bg-dark-surface hover:border-purple-light/50 hover:shadow-md hover:shadow-purple-vibrant/20;
+}
+
+.mobile-menu-button:hover {
+  @apply text-white;
+  transform: rotate(180deg);
+}
+
+::ng-deep .mobile-menu {
+  .mat-mdc-menu-content {
+    padding: 0 !important;
+    @apply bg-dark-card border border-dark-border rounded-xl overflow-hidden shadow-lg;
+  }
+  
+  a.mat-mdc-menu-item, button.mat-mdc-menu-item {
     i {
-      margin-right: 6px;
+      @apply mr-3 w-5 text-center text-purple-light;
     }
+    
+    @apply text-base py-3 px-4 text-dark-text bg-dark-card hover:bg-dark-surface;
     
     &:hover {
-      color: white;
-    }
-    
-    &.active-link {
-      color: white;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
-        height: 3px;
-        background-color: #FFD700;
-        border-radius: 2px;
+      i {
+        @apply text-purple-vibrant;
       }
     }
   }
 }
 
-.auth-buttons {
-  display: flex;
-  align-items: center;
+::ng-deep .mat-mdc-menu-panel.user-menu {
+  min-width: 260px !important;
+  @apply rounded-xl overflow-hidden shadow-lg border border-dark-border;
   
-  .login-btn {
-    margin-right: 8px;
+  .mdc-list {
+    padding: 0 !important;
+  }
+  
+  .user-info {
+    @apply flex items-center p-4 border-b border-dark-border bg-dark-surface;
+  
+    .user-avatar {
+      @apply w-10 h-10 rounded-full flex items-center justify-center mr-3 bg-gradient-to-br from-purple-dark to-purple-vibrant text-white shadow-md;
+    }
     
-    i {
-      margin-right: 6px;
+    .user-details {
+      strong {
+        @apply block text-white font-medium;
+      }
+      
+      small {
+        @apply text-purple-light/90 text-sm;
+      }
     }
   }
   
-  .register-btn {
-    background-color: #FFD700;
-    color: #1e3c72;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+  .mat-mdc-menu-item {
+    @apply text-dark-text bg-dark-card hover:bg-dark-surface py-3;
     
     i {
-      margin-right: 6px;
+      @apply text-purple-light mr-3;
     }
     
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      background-color: #FFC800;
-    }
-  }
-}
-
-.user-menu-trigger {
-  padding: 4px 12px;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  
-  i.fa-user-circle {
-    font-size: 18px;
-    margin-right: 8px;
-  }
-  
-  .username {
-    margin-right: 8px;
-  }
-  
-  i.fa-chevron-down {
-    font-size: 12px;
-  }
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    background-color: #e3f2fd;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-    
-    i {
-      font-size: 16px;
-      color: #1976d2;
+      i {
+        @apply text-purple-vibrant;
+      }
     }
   }
   
-  .user-details {
-    strong {
-      display: block;
-      color: #333;
-      margin-bottom: 2px;
-    }
-    
-    small {
-      color: #666;
-      font-size: 0.8rem;
-    }
+  .mat-divider {
+    @apply bg-dark-border;
   }
 }
 
-// Responsive styles
-.mobile-menu-button {
-  display: none;
+// Media queries
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    @apply hidden;
+  }
+  
+  .show-on-mobile {
+    @apply block;
+  }
 }
 
-::ng-deep .mobile-menu {
+@media (min-width: 769px) {
+  .hide-on-mobile {
+    @apply flex;
+  }
+  
+  .show-on-mobile {
+    @apply hidden;
+  }
+}
+
+// Animations
+@keyframes glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
   .mat-mdc-menu-content {
     padding: 8px 0 !important;
+    background-color: #F2F2F2;
   }
   
+
   a.mat-mdc-menu-item, button.mat-mdc-menu-item {
     i {
       margin-right: 12px;
       width: 20px;
+      color: #9C27B0;
     }
     
     font-size: 16px !important;
     height: 48px !important;
     line-height: 48px !important;
-  }
+    color: #2D1B69;
+    
+    &:hover {
+      background-color: #E8EAFF;
+      
+      i {
+        color: #2D1B69;
+      }
+    }
+  
 }
 
 @media screen and (max-width: 768px) {
@@ -201,6 +271,12 @@
   
   .show-on-mobile {
     display: block;
+  }
+  
+  .mobile-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -216,4 +292,42 @@
 
 ::ng-deep .mat-mdc-menu-panel.user-menu {
   min-width: 240px !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  
+  .mdc-list {
+    padding: 0 !important;
+  }
+  
+  .mat-mdc-menu-item {
+    color: #2D1B69;
+    
+    i {
+      color: #9C27B0;
+    }
+    
+    &:hover {
+      background-color: #E8EAFF;
+      
+      i {
+        color: #2D1B69;
+      }
+    }
+  }
+}
+
+.navbar-glow {
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, transparent, #BA68C8, transparent);
+  filter: blur(3px);
+  animation: glow 3s infinite linear;
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
