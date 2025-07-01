@@ -1,11 +1,13 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../shared/navbar/navbar'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  
+  imports: [CommonModule, RouterLink, NavbarComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })

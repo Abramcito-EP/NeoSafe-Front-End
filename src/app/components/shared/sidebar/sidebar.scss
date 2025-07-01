@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --purple-dark: #2d1b69;
+  --purple-vibrant: #9c27b0;
+  --purple-light: #ba68c8;
+  --dark-bg: #121212;
+  --dark-card: #1E1E1E;
+  --dark-surface: #242424;
+  --dark-border: #333333;
+  --dark-text: #E0E0E0;
+  --dark-text-secondary: #A0A0A0;
+}
+
+.sidebar-container {
+  width: 260px;
+  height: 100%;
+  background-color: var(--dark-card);
+  color: var(--dark-text);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--dark-border);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.logo-section {
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+
+.logo-container {
+  @apply flex items-center justify-center no-underline;
+  color: var(--dark-text);
+}
+
+.logo-icon {
+  font-size: 1.75rem;
+  color: var(--purple-light);
+  margin-right: 0.5rem;
+  text-shadow: 0 0 10px rgba(186, 104, 200, 0.3);
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(to right, var(--dark-text), var(--purple-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sidebar-divider {
+  margin: 0;
+  border-top-color: var(--dark-border);
+}
+
+.user-section {
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, var(--purple-dark), var(--purple-vibrant));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  
+  i {
+    font-size: 1.75rem;
+    color: var(--dark-text);
+  }
+}
+
+.user-details {
+  text-align: center;
+}
+
+.user-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--dark-text);
+}
+
+.user-email {
+  font-size: 0.8rem;
+  color: var(--dark-text-secondary);
+  margin: 0.25rem 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.nav-section, .settings-section {
+  padding: 0.75rem 0;
+}
+
+.nav-title {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--dark-text-secondary);
+  letter-spacing: 0.05rem;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--dark-text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  
+  i {
+    width: 1.25rem;
+    margin-right: 0.75rem;
+    color: var(--purple-light);
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+  
+  span {
+    font-size: 0.95rem;
+  }
+  
+  &:hover {
+    background-color: rgba(186, 104, 200, 0.08);
+    
+    i {
+      color: var(--purple-vibrant);
+    }
+  }
+  
+  &.active {
+    background-color: rgba(186, 104, 200, 0.12);
+    border-left-color: var(--purple-vibrant);
+    
+    i {
+      color: var(--purple-vibrant);
+    }
+  }
+}
+
+.logout-link {
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+
+  i {
+    margin-left: 0.25rem;
+  }
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 1rem;
+  border-top: 1px solid var(--dark-border);
+  text-align: center;
+}
+
+.version-info {
+  font-size: 0.75rem;
+  color: var(--dark-text-secondary);
+}
+
+// Responsive styles
+@media screen and (max-width: 768px) {
+  .sidebar-container {
+    width: 60px;
+    overflow-x: hidden;
+    transition: width 0.3s ease;
+    
+    &:hover {
+      width: 260px;
+    }
+  }
+  
+  .logo-text, .user-details, .nav-link span, .nav-title, .version-info {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+  }
+  
+  .sidebar-container:hover {
+    .logo-text, .user-details, .nav-link span, .nav-title, .version-info {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  
+  .nav-link {
+    padding: 0.75rem 0;
+    justify-content: center;
+    
+    i {
+      margin-right: 0;
+      font-size: 1.25rem;
+    }
+  }
+  
+  .sidebar-container:hover .nav-link {
+    padding: 0.75rem 1.5rem;
+    justify-content: flex-start;
+    
+    i {
+      margin-right: 0.75rem;
+      font-size: 1rem;
+    }
+  }
+}

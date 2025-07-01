@@ -18,10 +18,10 @@
         <a routerLink="/dashboard" routerLinkActive="active-link" mat-button>
           <i class="fas fa-chart-line"></i> Dashboard
         </a>
-        <a routerLink="/safes" routerLinkActive="active-link" mat-button>
+        <a routerLink="/cajas" routerLinkActive="active-link" mat-button>
           <i class="fas fa-lock"></i> Mis Cajas
         </a>
-        <a routerLink="/stats" routerLinkActive="active-link" mat-button>
+        <a routerLink="/estadisticas" routerLinkActive="active-link" mat-button>
           <i class="fas fa-chart-bar"></i> Estadísticas
         </a>
       </ng-container>
@@ -56,21 +56,14 @@
             </div>
           </div>
           <mat-divider></mat-divider>
-          <a mat-menu-item routerLink="/dashboard">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-          </a>
-          <a mat-menu-item routerLink="/safes">
-            <i class="fas fa-lock"></i>
-            <span>Mis Cajas</span>
-          </a>
-          <a mat-menu-item routerLink="/profile">
+
+          <a mat-menu-item routerLink="/perfil">
             <i class="fas fa-user-cog"></i>
             <span>Mi Perfil</span>
           </a>
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="logout()">
-            <i class="fas fa-sign-out-alt"></i>
+            <i class="fas fa-sign-out-alt ml-3"></i>
             <span>Cerrar Sesión</span>
           </button>
         </mat-menu>
@@ -103,7 +96,7 @@
         </a>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
-          <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+          <i class="fas fa-sign-out-alt ml-4"></i> Cerrar sesión
         </button>
       </ng-container>
       

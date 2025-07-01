@@ -17,6 +17,10 @@
 .navbar {
   @apply bg-dark-card sticky top-0 z-50 m-0 p-0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: fixed; /* Cambiado de sticky a fixed para asegurarse de que siempre esté en la parte superior */
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 
 .navbar-container {
@@ -142,66 +146,93 @@
 ::ng-deep .mobile-menu {
   .mat-mdc-menu-content {
     padding: 0 !important;
-    @apply bg-dark-card border border-dark-border rounded-xl overflow-hidden shadow-lg;
+    background-color: #121212 !important; // Fondo negro sólido
+    @apply rounded-xl overflow-hidden shadow-lg border border-dark-border;
   }
   
   a.mat-mdc-menu-item, button.mat-mdc-menu-item {
     i {
-      @apply mr-3 w-5 text-center text-purple-light;
+      @apply mr-3 w-5 text-center;
+      color: var(--purple-light) !important; // Iconos en morado claro
     }
     
-    @apply text-base py-3 px-4 text-dark-text bg-dark-card hover:bg-dark-surface;
+    background-color: #121212 !important;
+    color: white !important; // Texto en blanco
+    @apply text-base py-3 px-4;
     
     &:hover {
+      background-color: #242424 !important; // Fondo más claro al pasar el mouse
+      
       i {
-        @apply text-purple-vibrant;
+        color: white !important; // Iconos en blanco al pasar el mouse
       }
     }
+  }
+  
+  .mat-divider {
+    background-color: #333333 !important; // Color para el divisor
   }
 }
 
 ::ng-deep .mat-mdc-menu-panel.user-menu {
   min-width: 260px !important;
   @apply rounded-xl overflow-hidden shadow-lg border border-dark-border;
+  background-color: #121212 !important; // Color negro sólido
   
   .mdc-list {
     padding: 0 !important;
+    background-color: #121212 !important;
   }
   
   .user-info {
-    @apply flex items-center p-4 border-b border-dark-border bg-dark-surface;
+    @apply flex items-center p-4 border-b border-dark-border;
+    background-color: #1a1a1a !important; // Un poco más claro para el header
   
     .user-avatar {
-      @apply w-10 h-10 rounded-full flex items-center justify-center mr-3 bg-gradient-to-br from-purple-dark to-purple-vibrant text-white shadow-md;
+      @apply w-10 h-10 rounded-full flex items-center justify-center mr-3;
+      background: linear-gradient(to right, var(--purple-dark), var(--purple-vibrant));
+      
+      i {
+        color: white !important; // Icono en blanco
+        font-size: 16px;
+      }
     }
     
     .user-details {
       strong {
-        @apply block text-white font-medium;
+        @apply block font-medium;
+        color: white !important; // Texto en blanco
       }
       
       small {
-        @apply text-purple-light/90 text-sm;
+        color: var(--purple-light) !important; // Mantener el color morado para el email
+        @apply text-sm;
+        color: white !important;
       }
     }
   }
   
   .mat-mdc-menu-item {
-    @apply text-dark-text bg-dark-card hover:bg-dark-surface py-3;
+    background-color: #121212 !important;
+    color: white !important; // Texto en blanco
+    @apply py-3;
     
     i {
-      @apply text-purple-light mr-3;
+      color: var(--purple-light) !important; // Iconos en morado claro
+      @apply mr-3;
     }
     
     &:hover {
+      background-color: #242424 !important; // Fondo más claro al pasar el mouse
+      
       i {
-        @apply text-purple-vibrant;
+        color: white !important; // Iconos en blanco al pasar el mouse
       }
     }
   }
   
   .mat-divider {
-    @apply bg-dark-border;
+    background-color: #333333 !important; // Color para el divisor
   }
 }
 

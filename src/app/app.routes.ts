@@ -15,6 +15,22 @@ export const routes: Routes = [
     path: 'dashboard', 
     loadComponent: () => import('./components/dashboard/dashboard').then(c => c.DashboardComponent),
     canActivate: [authGuard]
+    
+  },
+  {
+    path:'cajas',
+    loadComponent: () => import('./components/dashboard/cajas/cajas').then(c => c.CajasComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path:'estadisticas',
+    loadComponent: () => import('./components/dashboard/estadisticas/estadisticas').then(c => c.EstadisticasComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path:'perfil',
+    loadComponent: () => import('./components/perfil/perfil').then(c => c.PerfilComponent),
+    canActivate: [authGuard]
   },
   { 
     path: '', 
@@ -27,8 +43,3 @@ export const routes: Routes = [
   }
 ];
 
-// @NgModule({
-//   imports: [RouterModule.forRoot(routes)],
-//   exports: [RouterModule]
-// })
-// export class AppRoutingModule { }

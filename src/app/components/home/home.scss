@@ -20,6 +20,12 @@ body {
   @apply bg-dark-bg text-dark-text font-sans antialiased;
 }
 
+main {
+  @apply bg-dark-bg text-dark-text;
+  padding-top: 64px; /* Altura del navbar para evitar superposición */
+  min-height: calc(100vh - 64px); /* Ajusta la altura mínima para tener en cuenta el navbar */
+}
+
 // Custom animations
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }

@@ -15,6 +15,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+// Importar el componente sidebar
+import { SidebarComponent } from '../shared/sidebar/sidebar';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -27,7 +30,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatCardModule,
     MatMenuModule,
     MatDividerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    SidebarComponent
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss']

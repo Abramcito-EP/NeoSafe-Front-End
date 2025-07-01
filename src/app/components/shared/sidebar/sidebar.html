@@ -1,1 +1,60 @@
-<p>sidebar works!</p>
+<div class="sidebar-container">
+  <div class="logo-section">
+    <a routerLink="/" class="logo-container">
+      <i class="fas fa-vault logo-icon"></i>
+      <span class="logo-text">NeoSafe</span>
+    </a>
+  </div>
+
+  <mat-divider class="sidebar-divider"></mat-divider>
+
+  <div class="user-section" *ngIf="currentUser$ | async as user">
+    <div class="user-avatar">
+      <i class="fas fa-user"></i>
+    </div>
+    <div class="user-details">
+      <h3 class="user-name">{{ user.name }} {{ user.lastName }}</h3>
+      <p class="user-email">{{ user.email }}</p>
+    </div>
+  </div>
+
+  <mat-divider class="sidebar-divider"></mat-divider>
+
+  <div class="nav-section">
+    <div class="nav-title">MENÚ PRINCIPAL</div>
+    <div class="nav-links">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-chart-line"></i>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/cajas" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-lock"></i>
+        <span>Mis Cajas</span>
+      </a>
+      <a routerLink="/stats" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-chart-bar"></i>
+        <span>Estadísticas</span>
+      </a>
+      <a routerLink="/profile" routerLinkActive="active" class="nav-link">
+        <i class="fas fa-user-cog"></i>
+        <span>Mi Perfil</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="nav-title">CONFIGURACIÓN</div>
+    <div class="nav-links">
+      <button class="nav-link logout-link" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="version-info">
+      <span>NeoSafe v1.0.0</span>
+    </div>
+  </div>
+</div>
