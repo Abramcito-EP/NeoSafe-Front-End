@@ -77,7 +77,7 @@
                   </span>
                   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                   <mat-datepicker #picker></mat-datepicker>
-                  <mat-hint>Opcional: nos ayuda a personalizar tu experiencia</mat-hint>
+                  <mat-hint class="optional-hint">Opcional: nos ayuda a personalizar tu experiencia</mat-hint>
                 </mat-form-field>
 
                 <button mat-raised-button 
@@ -124,7 +124,7 @@
                   <mat-error *ngIf="step2Form.get('password')?.hasError('minlength')">
                     Mínimo 6 caracteres
                   </mat-error>
-                  <mat-hint>Debe tener al menos 6 caracteres</mat-hint>
+                  <mat-hint><span class="validation-message">Debe tener al menos 6 caracteres</span></mat-hint>
                 </mat-form-field>
 
                 <div class="button-group">
