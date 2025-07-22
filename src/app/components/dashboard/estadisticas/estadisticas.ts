@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { SidebarComponent } from '../../shared/sidebar/sidebar';
 
 @Component({
   selector: 'app-estadisticas',
-  imports: [],
+  imports: [SidebarComponent],
   templateUrl: './estadisticas.html',
   styleUrl: './estadisticas.scss'
 })

@@ -27,12 +27,35 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class SidebarComponent implements OnInit {
   currentUser$: Observable<User | null>;
+  isDarkMode: boolean = true; // Por defecto en modo oscuro
   
   constructor(private authService: AuthService) {
     this.currentUser$ = this.authService.currentUser$;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Recuperar preferencia de tema del localStorage al iniciar
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      this.isDarkMode = savedTheme === 'dark';
+      this.applyTheme();
+    }
+  }
+  
+  toggleDarkMode(): void {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+    this.applyTheme();
+  }
+  
+  applyTheme(): void {
+    // Aplica la clase al documento para efectos globales
+    if (this.isDarkMode) {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+  }
   
   logout(): void {
     // Primero limpiamos localmente la sesión

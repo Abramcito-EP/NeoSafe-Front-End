@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { SidebarComponent } from "../shared/sidebar/sidebar";
 
 @Component({
   selector: 'app-perfil',
-  imports: [],
+  imports: [SidebarComponent],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss'
 })

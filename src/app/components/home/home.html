@@ -13,12 +13,24 @@
       <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto mb-8 opacity-0 animate-fadeInUp delay-1">
         Una solución innovadora para el registro y control de cajas fuertes con tecnología de vanguardia. Acceso remoto seguro y monitorización avanzada.
       </p>
-      <div class="flex flex-wrap justify-center gap-4 opacity-0 animate-fadeInUp delay-2">
+      
+      <!-- Botones cuando NO hay sesión iniciada -->
+      <div class="flex flex-wrap justify-center gap-4 opacity-0 animate-fadeInUp delay-2" *ngIf="!(isLoggedIn$ | async)">
         <a routerLink="/login" class="px-6 py-3 rounded-full bg-purple-vibrant text-white font-semibold flex items-center justify-center min-w-40 transform transition-all hover:bg-opacity-90 hover:-translate-y-1 hover:shadow-purple-glow">
           <i class="fas fa-lock-open mr-2"></i> Iniciar sesión
         </a>
         <a routerLink="/register" class="px-6 py-3 rounded-full bg-dark-card text-white font-semibold border-2 border-purple-vibrant flex items-center justify-center min-w-40 transform transition-all hover:bg-dark-surface hover:-translate-y-1">
           <i class="fas fa-user-plus mr-2"></i> Registrarse
+        </a>
+      </div>
+      
+      <!-- Botones cuando SÍ hay sesión iniciada -->
+      <div class="flex flex-wrap justify-center gap-4 opacity-0 animate-fadeInUp delay-2" *ngIf="isLoggedIn$ | async">
+        <a routerLink="/cajas" class="px-6 py-3 rounded-full bg-purple-vibrant text-white font-semibold flex items-center justify-center min-w-40 transform transition-all hover:bg-opacity-90 hover:-translate-y-1 hover:shadow-purple-glow">
+          <i class="fas fa-box mr-2"></i> Mis Cajas
+        </a>
+        <a routerLink="/estadisticas" class="px-6 py-3 rounded-full bg-dark-card text-white font-semibold border-2 border-purple-vibrant flex items-center justify-center min-w-40 transform transition-all hover:bg-dark-surface hover:-translate-y-1">
+          <i class="fas fa-chart-line mr-2"></i> Dashboard
         </a>
       </div>
     </div>
@@ -170,12 +182,24 @@
     <div class="max-w-3xl mx-auto px-4 text-center relative z-10 opacity-0 animate-fadeInUp">
       <h2 class="text-4xl font-bold text-white mb-4">Comienza a proteger tus bienes con tecnología de vanguardia</h2>
       <p class="text-xl text-gray-200 mb-8">Únete a miles de usuarios que confían en NeoSafe para la gestión inteligente de sus cajas fuertes.</p>
-      <div class="flex flex-wrap justify-center gap-6 cta-buttons">
+      
+      <!-- Botones CTA cuando NO hay sesión iniciada -->
+      <div class="flex flex-wrap justify-center gap-6 cta-buttons" *ngIf="!(isLoggedIn$ | async)">
         <a routerLink="/register" class="px-8 py-4 rounded-full bg-dark-card text-white font-bold flex items-center justify-center min-w-52 transform transition-all hover:scale-105 hover:shadow-purple-glow hover:-translate-y-1 text-lg">
           <i class="fas fa-rocket mr-3"></i> Comenzar Ahora
         </a>
         <a routerLink="/contact" class="px-8 py-4 rounded-full bg-transparent text-white font-bold border-2 border-white flex items-center justify-center min-w-52 transform transition-all hover:bg-white/10 hover:-translate-y-1 text-lg">
           <i class="fas fa-headset mr-3"></i> Solicitar Demo
+        </a>
+      </div>
+      
+      <!-- Botones CTA cuando SÍ hay sesión iniciada -->
+      <div class="flex flex-wrap justify-center gap-6 cta-buttons" *ngIf="isLoggedIn$ | async">
+        <a routerLink="/cajas" class="px-8 py-4 rounded-full bg-dark-card text-white font-bold flex items-center justify-center min-w-52 transform transition-all hover:scale-105 hover:shadow-purple-glow hover:-translate-y-1 text-lg">
+          <i class="fas fa-box mr-3"></i> Ver Mis Cajas
+        </a>
+        <a routerLink="/perfil" class="px-8 py-4 rounded-full bg-transparent text-white font-bold border-2 border-white flex items-center justify-center min-w-52 transform transition-all hover:bg-white/10 hover:-translate-y-1 text-lg">
+          <i class="fas fa-user-cog mr-3"></i> Mi Perfil
         </a>
       </div>
     </div>

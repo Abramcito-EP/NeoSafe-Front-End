@@ -69,12 +69,12 @@ export class NavbarComponent implements OnInit {
     this.authService.logout().subscribe({
       next: () => {
         console.log('Sesión cerrada correctamente');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: (error) => {
         console.error('Error al cerrar sesión:', error);
         // Ya hemos limpiado la sesión localmente, así que solo redirigimos
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       }
     });
   }

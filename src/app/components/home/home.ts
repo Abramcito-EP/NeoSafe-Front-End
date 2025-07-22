@@ -1,7 +1,9 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../shared/navbar/navbar'; // Asegúrate de que la ruta sea correcta
+import { Observable, of } from 'rxjs';
+import { NavbarComponent } from '../shared/navbar/navbar';
+import { AuthService } from '../../services/auth'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   selector: 'app-home',
@@ -13,6 +15,11 @@ import { NavbarComponent } from '../shared/navbar/navbar'; // Asegúrate de que 
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   title = 'NeoSafe';
+  isLoggedIn$: Observable<boolean>;
+  
+  constructor(private authService: AuthService) {
+    this.isLoggedIn$ = of(this.authService.isLoggedIn());
+  }
   
   ngOnInit() {
     // Inicializar variables o servicios si es necesario

@@ -66,7 +66,7 @@ export class LoginComponent {
         // Pequeño delay para asegurar que la sesión se guarde
         setTimeout(() => {
           console.log('Intentando redirigir al dashboard...');
-          this.router.navigate(['/dashboard']).then(success => {
+          this.router.navigate(['/']).then(success => {
             if (success) {
               console.log('Redirección exitosa al dashboard');
             } else {
