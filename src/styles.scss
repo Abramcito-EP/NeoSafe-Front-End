@@ -24,6 +24,28 @@ body {
   box-sizing: border-box;
 }
 
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap');
+
+/* Aplicar Poppins globalmente */
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* O si prefieres ser más específico */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Estilos globales para clases específicas */
+.title-gradient { 
+  font-family: 'Poppins', sans-serif; 
+}
+
+.subtitle { 
+  font-family: 'Poppins', sans-serif; 
+}
+
 /* Estilos para iconos Font Awesome */
 .fa-icon {
   display: inline-flex;
@@ -43,4 +65,63 @@ body {
 /* Estilos para botones personalizados */
 .mat-mdc-raised-button {
   border-radius: 12px !important;
+}
+
+/* filepath: src/styles.scss */
+/* ...existing code... */
+
+:root {
+  /* Colores modo claro */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --sidebar-bg: #2c3e50;
+  --sidebar-text: #ecf0f1;
+  --card-bg: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme {
+  /* Colores modo oscuro */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --border-color: #404040;
+  --sidebar-bg: #1e293b;
+  --sidebar-text: #f1f5f9;
+  --card-bg: #2d2d2d;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Aplicar variables CSS */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilos para componentes comunes */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.table {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+.table th {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.table td {
+  border-color: var(--border-color);
 }

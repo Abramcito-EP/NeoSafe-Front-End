@@ -1,0 +1,281 @@
+<div class="caja-card neo-card-bg">
+  <!-- Header de la caja -->
+  <div class="caja-header neo-header-gradient">
+    <div class="caja-title-section">
+      <div class="caja-icon neo-icon-primary">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <div class="caja-details">
+        <h3 class="caja-name neo-text-white">{{ cajaData.name }}</h3>
+        <p class="caja-id neo-text-lavender">{{ cajaData.id }}</p>
+        <span class="status-badge neo-badge" [ngClass]="getStatusColor(cajaData.status)">
+          <i [ngClass]="getStatusIcon(cajaData.status)"></i>
+          {{ cajaData.status.toUpperCase() }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Estado compacto de la caja -->
+    <div class="caja-status-compact neo-status-section">
+      <div class="status-item neo-status-item">
+        <i [ngClass]="cajaData.isLocked ? 'fas fa-lock neo-text-success' : 'fas fa-unlock neo-text-danger'"></i>
+        <span [ngClass]="cajaData.isLocked ? 'neo-text-success' : 'neo-text-danger'">
+          {{ cajaData.isLocked ? 'CERRADA' : 'ABIERTA' }}
+        </span>
+      </div>
+      
+      <div class="status-item neo-status-item">
+        <div class="battery-indicator neo-battery">
+          <i class="fas fa-battery-three-quarters neo-icon-secondary"></i>
+          <span class="battery-percentage neo-text-white">{{ cajaData.batteryLevel }}%</span>
+        </div>
+      </div>
+
+      <div class="status-item neo-status-item">
+        <i class="fas fa-clock neo-icon-secondary"></i>
+        <span class="last-access-time neo-text-lavender">{{ formatTimeAgo(cajaData.lastAccess) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones principales -->
+  <div class="caja-actions-section neo-actions-bg">
+    <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()">
+      <i class="fas fa-sensors"></i>
+      <span>Ver Sensores</span>
+      <span class="sensors-badge neo-badge-count">{{ getSensorCount() }}</span>
+    </button>
+    
+    <button class="action-button secondary neo-btn-secondary">
+      <i class="fas fa-chart-line"></i>
+      <span>Estadísticas</span>
+    </button>
+    
+    <button class="action-button secondary neo-btn-secondary">
+      <i class="fas fa-cog"></i>
+      <span>Configurar</span>
+    </button>
+  </div>
+</div>
+
+<!-- Modal para todos los sensores -->
+<div class="sensors-modal-overlay neo-modal-overlay" 
+     *ngIf="showSensorsModal" 
+     (click)="closeSensorsModal()">
+  <div class="sensors-modal neo-modal-card" (click)="$event.stopPropagation()">
+    <div class="sensors-modal-header neo-modal-header">
+      <div class="modal-title">
+        <div class="caja-icon-small neo-icon-modal">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div>
+          <h3 class="neo-text-primary">{{ cajaData.name }} - Sensores</h3>
+          <span class="sensors-count neo-text-meta">{{ getSensorCount() }} de 7 sensores activos</span>
+        </div>
+      </div>
+      <button class="modal-close-btn neo-btn-close" (click)="closeSensorsModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="sensors-modal-content neo-modal-content">
+      <div class="sensors-grid-modal neo-sensors-grid">
+        <div class="sensor-card-modal neo-sensor-card" 
+             *ngFor="let sensor of ['nfc', 'display', 'temperature', 'humidity', 'lock', 'weight', 'camera']"
+             (click)="openSensorModal(sensor)">
+          
+          <div class="sensor-icon-modal neo-sensor-icon">
+            <i [ngClass]="getSensorIcon(sensor)"></i>
+          </div>
+          
+          <div class="sensor-info-modal">
+            <span class="sensor-name neo-text-primary">{{ getSensorTitle(sensor) }}</span>
+            <span class="sensor-status neo-status-badge" [ngClass]="getStatusColor(getSensorStatus(sensor))">
+              <i [ngClass]="getStatusIcon(getSensorStatus(sensor))"></i>
+              {{ getSensorStatus(sensor).toUpperCase() }}
+            </span>
+            <div class="sensor-value neo-sensor-value" *ngIf="getSensorDisplayValue(sensor)">
+              {{ getSensorDisplayValue(sensor) }}
+            </div>
+          </div>
+
+          <div class="sensor-arrow neo-arrow">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para detalles de sensor individual -->
+<div class="sensor-modal-overlay neo-modal-overlay" 
+     *ngIf="selectedSensor" 
+     (click)="closeSensorModal()">
+  <div class="sensor-modal neo-modal-card" (click)="$event.stopPropagation()">
+    <div class="sensor-modal-header neo-modal-header">
+      <div class="sensor-modal-title">
+        <div class="sensor-icon large neo-sensor-icon-large">
+          <i [ngClass]="getSensorIcon(selectedSensor)"></i>
+        </div>
+        <div>
+          <h3 class="neo-text-primary">{{ getSensorTitle(selectedSensor) }}</h3>
+          <span class="sensor-modal-status neo-status-badge" [ngClass]="getStatusColor(getSensorStatus(selectedSensor))">
+            <i [ngClass]="getStatusIcon(getSensorStatus(selectedSensor))"></i>
+            {{ getSensorStatus(selectedSensor).toUpperCase() }}
+          </span>
+        </div>
+      </div>
+      <button class="modal-close-btn neo-btn-close" (click)="closeSensorModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="sensor-modal-content neo-modal-content">
+      
+      <!-- NFC Details -->
+      <div *ngIf="selectedSensor === 'nfc'" class="sensor-detail-content neo-detail-section">
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Última tarjeta:</span>
+          <span class="mono neo-text-value">{{ getSensorData('nfc').cardId }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Señal:</span>
+          <span class="neo-text-value">{{ getSensorData('nfc').signalStrength }}%</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Última lectura:</span>
+          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('nfc').lastRead) }} atrás</span>
+        </div>
+      </div>
+
+      <!-- Display Details -->
+      <div *ngIf="selectedSensor === 'display'" class="sensor-detail-content neo-detail-section">
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Mensaje actual:</span>
+          <span class="neo-text-value">{{ getSensorData('display').currentMessage }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Brillo:</span>
+          <span class="neo-text-value">{{ getSensorData('display').brightness }}%</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Tiempo activo:</span>
+          <span class="neo-text-value">{{ getSensorData('display').uptime }}</span>
+        </div>
+      </div>
+
+      <!-- Temperature/Humidity Details -->
+      <div *ngIf="selectedSensor === 'temperature' || selectedSensor === 'humidity'" class="sensor-detail-content neo-detail-section">
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Actual:</span>
+          <span class="value-highlight neo-value-highlight">{{ getSensorData(selectedSensor).current }}{{ selectedSensor === 'temperature' ? '°C' : '%' }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Rango permitido:</span>
+          <span class="neo-text-value">{{ getSensorData(selectedSensor).min }} - {{ getSensorData(selectedSensor).max }}{{ selectedSensor === 'temperature' ? '°C' : '%' }}</span>
+        </div>
+        <div class="history-chart neo-history-chart">
+          <div class="history-label neo-text-label">Historial de valores:</div>
+          <div class="history-bars neo-history-bars">
+            <div *ngFor="let value of getSensorData(selectedSensor).history; let i = index" 
+                 class="history-bar neo-history-bar"
+                 [style.height.px]="getHistoryBarHeight(value, getSensorData(selectedSensor).history)"
+                 [title]="value + (selectedSensor === 'temperature' ? '°C' : '%')">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lock Details -->
+      <div *ngIf="selectedSensor === 'lock'" class="sensor-detail-content neo-detail-section">
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Estado:</span>
+          <span class="neo-text-value" [ngClass]="getSensorData('lock').isLocked ? 'text-success' : 'text-danger'">
+            {{ getSensorData('lock').isLocked ? 'CERRADA' : 'ABIERTA' }}
+          </span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Mecanismo:</span>
+          <span class="neo-text-value">{{ getSensorData('lock').mechanism }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Intentos fallidos:</span>
+          <span class="neo-text-value">{{ getSensorData('lock').attempts }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Último desbloqueo:</span>
+          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('lock').lastUnlock) }} atrás</span>
+        </div>
+      </div>
+
+      <!-- Weight Details -->
+      <div *ngIf="selectedSensor === 'weight'" class="sensor-detail-content neo-detail-section">
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Peso actual:</span>
+          <span class="value-highlight neo-value-highlight">{{ getSensorData('weight').current }} {{ getSensorData('weight').unit }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Peso base:</span>
+          <span class="neo-text-value">{{ getSensorData('weight').baseline }} {{ getSensorData('weight').unit }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Diferencia:</span>
+          <span class="neo-text-value" [ngClass]="Math.abs(getSensorData('weight').current - getSensorData('weight').baseline) > getSensorData('weight').threshold ? 'text-warning' : 'text-success'">
+            {{ getSensorData('weight').current > getSensorData('weight').baseline ? '+' : '' }}{{ (getSensorData('weight').current - getSensorData('weight').baseline).toFixed(1) }} {{ getSensorData('weight').unit }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Camera Details -->
+      <div *ngIf="selectedSensor === 'camera'" class="sensor-detail-content neo-detail-section">
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Estado:</span>
+          <span class="neo-text-value" [ngClass]="getSensorData('camera').isRecording ? 'text-danger' : 'text-success'">
+            <i [ngClass]="getSensorData('camera').isRecording ? 'fas fa-video' : 'fas fa-camera'"></i>
+            {{ getSensorData('camera').isRecording ? 'GRABANDO' : 'ACTIVA' }}
+          </span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Resolución:</span>
+          <span class="neo-text-value">{{ getSensorData('camera').resolution }} &#64; {{ getSensorData('camera').fps }}fps</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Almacenamiento:</span>
+          <span class="neo-text-value">{{ getSensorData('camera').storageUsed }}% ({{ getSensorData('camera').storageUsed }}/{{ getSensorData('camera').storageTotal }} GB)</span>
+        </div>
+        
+        <!-- Camera Preview -->
+        <div class="camera-preview neo-camera-section">
+          <div class="camera-feed neo-camera-feed">
+            <div class="camera-placeholder neo-camera-placeholder">
+              <i class="fas fa-camera"></i>
+              <p>Vista en vivo</p>
+              <small>Cámara {{ getSensorData('camera').resolution }}</small>
+            </div>
+            <div class="camera-status" *ngIf="getSensorData('camera').isRecording">
+              <div class="rec-indicator"></div>
+              <span>REC</span>
+            </div>
+          </div>
+          
+          <div class="camera-controls neo-camera-controls">
+            <button class="camera-btn neo-camera-btn" title="Captura">
+              <i class="fas fa-camera"></i>
+            </button>
+            <button class="camera-btn neo-camera-btn" 
+                    [ngClass]="{ 'recording': getSensorData('camera').isRecording, 'neo-btn-recording': getSensorData('camera').isRecording }"
+                    (click)="toggleRecording()"
+                    title="Grabar">
+              <i [ngClass]="getSensorData('camera').isRecording ? 'fas fa-stop' : 'fas fa-play'"></i>
+            </button>
+            <button class="camera-btn neo-camera-btn" title="Descargar">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

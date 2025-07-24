@@ -15,9 +15,6 @@
         <i class="fas fa-home"></i> Inicio
       </a>
       <ng-container *ngIf="isLoggedIn">
-        <a routerLink="/dashboard" routerLinkActive="active-link" mat-button>
-          <i class="fas fa-chart-line"></i> Dashboard
-        </a>
         <a routerLink="/cajas" routerLinkActive="active-link" mat-button>
           <i class="fas fa-lock"></i> Mis Cajas
         </a>
@@ -82,9 +79,6 @@
       </a>
       
       <ng-container *ngIf="isLoggedIn">
-        <a mat-menu-item routerLink="/dashboard">
-          <i class="fas fa-chart-line"></i> Dashboard
-        </a>
         <a mat-menu-item routerLink="/safes">
           <i class="fas fa-lock"></i> Mis Cajas
         </a>

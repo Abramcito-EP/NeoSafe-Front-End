@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { SidebarComponent } from '../../shared/sidebar/sidebar';
+import { SidebarComponent } from '../shared/sidebar/sidebar';
 
 @Component({
   selector: 'app-estadisticas',
   imports: [SidebarComponent],
   templateUrl: './estadisticas.html',
-  styleUrl: './estadisticas.scss'
+  styleUrls: ['./estadisticas.scss']
 })
 export class EstadisticasComponent {
   // Aquí puedes agregar la lógica necesaria para las estadísticas

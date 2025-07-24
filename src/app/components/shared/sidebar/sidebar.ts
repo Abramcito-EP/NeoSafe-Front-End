@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth';
 import { User } from '../../../models/user.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 // Material imports
 import { MatListModule } from '@angular/material/list';
@@ -25,28 +25,24 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss'
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
   currentUser$: Observable<User | null>;
-  isDarkMode: boolean = true; // Por defecto en modo oscuro
-  
+  isDarkMode = false;
+  private themeSubscription?: Subscription;
+
   constructor(private authService: AuthService) {
     this.currentUser$ = this.authService.currentUser$;
   }
-
   ngOnInit(): void {
-    // Recuperar preferencia de tema del localStorage al iniciar
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      this.isDarkMode = savedTheme === 'dark';
-      this.applyTheme();
-    }
+    throw new Error('Method not implemented.');
   }
-  
-  toggleDarkMode(): void {
-    this.isDarkMode = !this.isDarkMode;
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-    this.applyTheme();
+
+ 
+  ngOnDestroy(): void {
+    this.themeSubscription?.unsubscribe();
   }
+
+ 
   
   applyTheme(): void {
     // Aplica la clase al documento para efectos globales

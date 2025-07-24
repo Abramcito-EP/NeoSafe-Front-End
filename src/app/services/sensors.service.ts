@@ -6,6 +6,7 @@ import { AuthService } from './auth';
 import { io, Socket } from 'socket.io-client';
 
 export interface SensorData {
+  current: any;
   value: number;
   timestamp: string;
 }

@@ -1,0 +1,59 @@
+<div class="page-container">
+  <app-sidebar></app-sidebar>
+  <div class="main-content">
+    <div class="content-header">
+      <div class="header-text">
+        <h1 class="title-gradient">Mis Cajas</h1>
+        <p class="subtitle">Gestiona todas tus cajas de seguridad con facilidad</p>
+      </div>
+      
+      <div class="header-actions">
+        <button class="refresh-btn" (click)="refreshAllData()" [disabled]="isLoading" [ngClass]="{ 'loading': isLoading }" aria-label="Actualizar datos de las cajas">
+          <i class="fas fa-sync-alt" [ngClass]="{ 'fa-spin': isLoading }"></i>
+          <span>{{ isLoading ? 'Cargando...' : 'Actualizar' }}</span>
+        </button>
+        
+        <button class="add-caja-btn" (click)="addCaja()" aria-label="Agregar nueva caja de seguridad">
+          <i class="fas fa-plus"></i>
+          <span>Agregar Caja</span>
+        </button>
+        
+        <div class="connection-indicator" [ngClass]="{ 'connected': isConnected, 'disconnected': !isConnected }" role="status" aria-live="polite">
+          <i [ngClass]="isConnected ? 'fas fa-wifi' : 'fas fa-wifi-slash'"></i>
+          <span>{{ isConnected ? 'Conectado' : 'Desconectado' }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content-body">
+      <!-- Loading state -->
+      <div class="loading-state" *ngIf="isLoading">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>Cargando datos de sensores...</p>
+      </div>
+
+      <!-- Cajas grid con datos reales -->
+      <div class="cajas-grid" *ngIf="!isLoading">
+        <app-caja 
+          *ngFor="let caja of cajasData; trackBy: trackByCajaId" 
+          [cajaData]="caja">
+        </app-caja>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" *ngIf="!isLoading && cajasData.length === 0">
+        <div class="empty-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>No hay cajas configuradas</h3>
+        <p>Agrega tu primera caja de seguridad para comenzar</p>
+        <button class="add-caja-btn" (click)="addCaja()">
+          <i class="fas fa-plus"></i>
+          Agregar Caja
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

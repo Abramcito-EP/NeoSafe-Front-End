@@ -1,15 +1,271 @@
 <div class="page-container">
-<app-sidebar></app-sidebar>
+  <app-sidebar></app-sidebar>
   <div class="main-content">
     <div class="content-header">
       <h1>Mi Perfil</h1>
-      <p>Administra tu información personal</p>
+      <p>Administra tu información personal y configuraciones</p>
     </div>
     
     <div class="content-body">
-      <!-- Contenido específico del perfil -->
       <div class="profile-content">
-        <p>Contenido del perfil aquí...</p>
+        <!-- Información del Usuario -->
+        <div class="profile-section">
+          <div class="section-header">
+            <h2>Información Personal</h2>
+            <button class="edit-btn" (click)="toggleEdit()">
+              {{ isEditing ? 'Cancelar' : 'Editar' }}
+            </button>
+          </div>
+          
+          <div class="user-avatar">
+            <div class="avatar-container">
+              <img [src]="userProfile.avatar || '/assets/default-avatar.png'" 
+                   alt="Avatar del usuario" class="avatar-image">
+              <button class="change-avatar-btn" *ngIf="isEditing">
+                <i class="fas fa-camera"></i>
+              </button>
+            </div>
+          </div>
+
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="firstName">Nombre</label>
+                <input 
+                  type="text" 
+                  id="firstName" 
+                  formControlName="firstName"
+                  [disabled]="!isEditing"
+                  class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label for="lastName">Apellido</label>
+                <input 
+                  type="text" 
+                  id="lastName" 
+                  formControlName="lastName"
+                  [disabled]="!isEditing"
+                  class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email"
+                  [disabled]="!isEditing"
+                  class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Teléfono</label>
+                <input 
+                  type="tel" 
+                  id="phone" 
+                  formControlName="phone"
+                  [disabled]="!isEditing"
+                  class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label for="birthDate">Fecha de Nacimiento</label>
+                <input 
+                  type="date" 
+                  id="birthDate" 
+                  formControlName="birthDate"
+                  [disabled]="!isEditing"
+                  class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label for="gender">Género</label>
+                <select 
+                  id="gender" 
+                  formControlName="gender"
+                  [disabled]="!isEditing"
+                  class="form-input">
+                  <option value="">Seleccionar</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                  <option value="otro">Otro</option>
+                  <option value="prefiero-no-decir">Prefiero no decir</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-actions" *ngIf="isEditing">
+              <button type="button" class="btn-secondary" (click)="cancelEdit()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-primary" [disabled]="profileForm.invalid">
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Configuración de Seguridad -->
+        <div class="profile-section">
+          <div class="section-header">
+            <h2>Seguridad</h2>
+          </div>
+          
+          <div class="security-options">
+            <div class="security-item">
+              <div class="security-info">
+                <h3>Cambiar Contraseña</h3>
+                <p>Actualiza tu contraseña regularmente para mantener tu cuenta segura</p>
+              </div>
+              <button class="btn-outline" (click)="openChangePasswordModal()">
+                Cambiar
+              </button>
+            </div>
+
+            <div class="security-item">
+              <div class="security-info">
+                <h3>Autenticación de Dos Factores</h3>
+                <p>Añade una capa extra de seguridad a tu cuenta</p>
+              </div>
+              <div class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  id="twoFactor" 
+                  [(ngModel)]="securitySettings.twoFactorEnabled"
+                  (change)="toggleTwoFactor()">
+                <label for="twoFactor"></label>
+              </div>
+            </div>
+
+            <div class="security-item">
+              <div class="security-info">
+                <h3>Sesiones Activas</h3>
+                <p>Revisa y administra tus sesiones activas</p>
+              </div>
+              <button class="btn-outline" (click)="viewActiveSessions()">
+                Ver Sesiones
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuración de Notificaciones -->
+        <div class="profile-section">
+          <div class="section-header">
+            <h2>Notificaciones</h2>
+          </div>
+          
+          <div class="notification-settings">
+            <div class="notification-item">
+              <div class="notification-info">
+                <h3>Notificaciones por Email</h3>
+                <p>Recibe actualizaciones importantes por correo</p>
+              </div>
+              <div class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  id="emailNotifications" 
+                  [(ngModel)]="notificationSettings.email">
+                <label for="emailNotifications"></label>
+              </div>
+            </div>
+
+            <div class="notification-item">
+              <div class="notification-info">
+                <h3>Notificaciones Push</h3>
+                <p>Recibe notificaciones en tiempo real</p>
+              </div>
+              <div class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  id="pushNotifications" 
+                  [(ngModel)]="notificationSettings.push">
+                <label for="pushNotifications"></label>
+              </div>
+            </div>
+
+            <div class="notification-item">
+              <div class="notification-info">
+                <h3>Notificaciones de Marketing</h3>
+                <p>Recibe ofertas y promociones especiales</p>
+              </div>
+              <div class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  id="marketingNotifications" 
+                  [(ngModel)]="notificationSettings.marketing">
+                <label for="marketingNotifications"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuración de Privacidad -->
+        <div class="profile-section">
+          <div class="section-header">
+            <h2>Privacidad</h2>
+          </div>
+          
+          <div class="privacy-options">
+            <div class="privacy-item">
+              <div class="privacy-info">
+                <h3>Perfil Público</h3>
+                <p>Permite que otros usuarios vean tu perfil</p>
+              </div>
+              <div class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  id="publicProfile" 
+                  [(ngModel)]="privacySettings.publicProfile">
+                <label for="publicProfile"></label>
+              </div>
+            </div>
+
+            <div class="privacy-item">
+              <div class="privacy-info">
+                <h3>Mostrar Estado en Línea</h3>
+                <p>Permite que otros vean cuando estás conectado</p>
+              </div>
+              <div class="toggle-switch">
+                <input 
+                  type="checkbox" 
+                  id="onlineStatus" 
+                  [(ngModel)]="privacySettings.showOnlineStatus">
+                <label for="onlineStatus"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones de Cuenta -->
+        <div class="profile-section danger-section">
+          <div class="section-header">
+            <h2>Zona de Peligro</h2>
+          </div>
+          
+          <div class="danger-actions">
+            <div class="danger-item">
+              <div class="danger-info">
+                <h3>Desactivar Cuenta</h3>
+                <p>Desactiva temporalmente tu cuenta</p>
+              </div>
+              <button class="btn-danger" (click)="deactivateAccount()">
+                Desactivar
+              </button>
+            </div>
+
+            <div class="danger-item">
+              <div class="danger-info">
+                <h3>Eliminar Cuenta</h3>
+                <p>Elimina permanentemente tu cuenta y todos tus datos</p>
+              </div>
+              <button class="btn-danger" (click)="deleteAccount()">
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
