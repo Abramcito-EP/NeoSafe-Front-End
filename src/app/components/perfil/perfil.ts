@@ -36,6 +36,9 @@ interface PrivacySettings {
   styleUrl: './perfil.scss'
 })
 export class PerfilComponent implements OnInit {
+changeAvatar() {
+throw new Error('Method not implemented.');
+}
   profileForm: FormGroup;
   isEditing = false;
   

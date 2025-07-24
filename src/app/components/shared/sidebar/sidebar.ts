@@ -26,33 +26,53 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './sidebar.scss'
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+profileForm: any;
+securitySettings: any;
+onSubmit() {
+throw new Error('Method not implemented.');
+}
+isEditing: any;
+userProfile: any;
+changeAvatar() {
+throw new Error('Method not implemented.');
+}
+toggleEdit() {
+throw new Error('Method not implemented.');
+}
+cancelEdit() {
+throw new Error('Method not implemented.');
+}
+openChangePasswordModal() {
+throw new Error('Method not implemented.');
+}
+toggleTwoFactor() {
+throw new Error('Method not implemented.');
+}
+viewActiveSessions() {
+throw new Error('Method not implemented.');
+}
+privacySettings: any;
+deactivateAccount() {
+throw new Error('Method not implemented.');
+}
+deleteAccount() {
+throw new Error('Method not implemented.');
+}
   currentUser$: Observable<User | null>;
-  isDarkMode = false;
   private themeSubscription?: Subscription;
 
   constructor(private authService: AuthService) {
     this.currentUser$ = this.authService.currentUser$;
   }
+
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    // Inicialización básica del componente
   }
 
- 
   ngOnDestroy(): void {
     this.themeSubscription?.unsubscribe();
   }
 
- 
-  
-  applyTheme(): void {
-    // Aplica la clase al documento para efectos globales
-    if (this.isDarkMode) {
-      document.body.classList.add('dark-theme');
-    } else {
-      document.body.classList.remove('dark-theme');
-    }
-  }
-  
   logout(): void {
     // Primero limpiamos localmente la sesión
     this.authService.clearSession();
