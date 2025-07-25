@@ -2,14 +2,391 @@
   <app-sidebar></app-sidebar>
   <div class="main-content">
     <div class="content-header">
-      <h1>Estadísticas</h1>
-      <p>Visualiza el rendimiento de tus cajas</p>
+      <div class="header-text">
+        <h1>Estadísticas</h1>
+        <p>Visualiza el rendimiento y actividad de tus cajas</p>
+      </div>
+      <div class="header-actions">
+        <select class="period-selector">
+          <option value="7d">Últimos 7 días</option>
+          <option value="30d" selected>Últimos 30 días</option>
+          <option value="90d">Últimos 90 días</option>
+          <option value="1y">Último año</option>
+        </select>
+        <button class="export-btn">
+          <i class="fas fa-download"></i>
+          Exportar
+        </button>
+      </div>
     </div>
     
     <div class="content-body">
-      <!-- Contenido específico de estadísticas -->
-      <div class="stats-grid">
-        <p>Contenido de estadísticas aquí...</p>
+      <!-- KPI Cards -->
+      <div class="kpi-section">
+        <div class="kpi-card">
+          <div class="kpi-icon">
+            <i class="fas fa-box"></i>
+          </div>
+          <div class="kpi-content">
+            <h3>Total de Cajas</h3>
+            <div class="kpi-value">{{ totalCajas }}</div>
+            <div class="kpi-change positive">
+              <i class="fas fa-arrow-up"></i>
+              +2 este mes
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">
+            <i class="fas fa-lock"></i>
+          </div>
+          <div class="kpi-content">
+            <h3>Cajas Activas</h3>
+            <div class="kpi-value">{{ cajasActivas }}</div>
+            <div class="kpi-change positive">
+              <i class="fas fa-arrow-up"></i>
+              +5% vs mes anterior
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="kpi-content">
+            <h3>Accesos Totales</h3>
+            <div class="kpi-value">{{ accesosTotal }}</div>
+            <div class="kpi-change neutral">
+              <i class="fas fa-minus"></i>
+              Sin cambios
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="kpi-content">
+            <h3>Nivel de Seguridad</h3>
+            <div class="kpi-value">98%</div>
+            <div class="kpi-change positive">
+              <i class="fas fa-arrow-up"></i>
+              +2% este mes
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-section">
+        <!-- Activity Chart -->
+        <div class="chart-card large">
+          <div class="chart-header">
+            <h3>Actividad de Accesos</h3>
+            <div class="chart-legend">
+              <span class="legend-item">
+                <span class="legend-color primary"></span>
+                Accesos exitosos
+              </span>
+              <span class="legend-item">
+                <span class="legend-color secondary"></span>
+                Intentos fallidos
+              </span>
+            </div>
+          </div>
+          <div class="chart-container">
+            <div class="chart-placeholder">
+              <i class="fas fa-chart-area"></i>
+              <p>Gráfico de actividad de accesos</p>
+              <small>Datos de los últimos 30 días</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Distribution -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Estado de Cajas</h3>
+          </div>
+          <div class="chart-container">
+            <div class="donut-chart">
+              <div class="donut-center">
+                <div class="donut-value">{{ totalCajas }}</div>
+                <div class="donut-label">Total</div>
+              </div>
+            </div>
+            <div class="donut-legend">
+              <div class="legend-item">
+                <span class="legend-color status-active"></span>
+                <span class="legend-text">Activas ({{ cajasActivas }})</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color status-inactive"></span>
+                <span class="legend-text">Inactivas ({{ cajasInactivas }})</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color status-maintenance"></span>
+                <span class="legend-text">Mantenimiento ({{ cajasMantenimiento }})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tables Section -->
+      <div class="tables-section">
+        <!-- Recent Activity -->
+        <div class="table-card">
+          <div class="table-header">
+            <h3>Actividad Reciente</h3>
+            <button class="view-all-btn" (click)="openActivityModal()">Ver todo</button>
+          </div>
+          <div class="table-container">
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Caja</th>
+                  <th>Acción</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let activity of recentActivity">
+                  <td>{{ activity.fecha | date:'short' }}</td>
+                  <td>{{ activity.cajaName }}</td>
+                  <td>{{ activity.accion }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="activity.estado">
+                      {{ activity.estado }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Top Cajas -->
+        <div class="table-card">
+          <div class="table-header">
+            <h3>Cajas Más Utilizadas</h3>
+            <button class="view-all-btn" (click)="openTopCajasModal()">Ver todo</button>
+          </div>
+          <div class="ranking-list">
+            <div class="ranking-item" *ngFor="let caja of topCajas; let i = index">
+              <div class="ranking-position">{{ i + 1 }}</div>
+              <div class="ranking-content">
+                <div class="ranking-name">{{ caja.name }}</div>
+                <div class="ranking-stats">{{ caja.accesos }} accesos</div>
+              </div>
+              <div class="ranking-bar">
+                <div class="ranking-fill" [style.width.%]="caja.percentage"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts Section -->
+      <div class="alerts-section">
+        <div class="alerts-card">
+          <div class="alerts-header">
+            <h3>Alertas y Notificaciones</h3>
+            <span class="alerts-count">{{ alertas.length }}</span>
+          </div>
+          <div class="alerts-list">
+            <div class="alert-item" *ngFor="let alerta of alertas" [ngClass]="alerta.tipo">
+              <div class="alert-icon">
+                <i [ngClass]="getAlertIcon(alerta.tipo)"></i>
+              </div>
+              <div class="alert-content">
+                <div class="alert-title">{{ alerta.titulo }}</div>
+                <div class="alert-description">{{ alerta.descripcion }}</div>
+                <div class="alert-time">{{ alerta.fecha | date:'short' }}</div>
+              </div>
+              <button class="alert-dismiss" (click)="dismissAlert(alerta.id)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Actividad Completa -->
+<div class="modal-overlay" *ngIf="showActivityModal" (click)="closeActivityModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fas fa-history"></i>
+        <div>
+          <h3>Actividad Completa</h3>
+          <span class="modal-subtitle">Historial completo de accesos</span>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="closeActivityModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-content">
+      <div class="modal-filters">
+        <div class="filter-group">
+          <label>Filtrar por caja:</label>
+          <select #cajaSelect (change)="activityFilter.caja = cajaSelect.value; filterActivity()">
+            <option value="">Todas las cajas</option>
+            <option *ngFor="let caja of availableCajas" [value]="caja.id">{{ caja.name }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Estado:</label>
+          <select #estadoSelect (change)="activityFilter.estado = estadoSelect.value; filterActivity()">
+            <option value="">Todos</option>
+            <option value="exitoso">Exitoso</option>
+            <option value="fallido">Fallido</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Fecha desde:</label>
+          <input type="date" #fechaDesde [value]="activityFilter.fechaDesde" (change)="activityFilter.fechaDesde = fechaDesde.value; filterActivity()">
+        </div>
+        <div class="filter-group">
+          <label>Fecha hasta:</label>
+          <input type="date" #fechaHasta [value]="activityFilter.fechaHasta" (change)="activityFilter.fechaHasta = fechaHasta.value; filterActivity()">
+        </div>
+      </div>
+      
+      <div class="modal-table-container">
+        <table class="full-stats-table">
+          <thead>
+            <tr>
+              <th>Fecha y Hora</th>
+              <th>Caja</th>
+              <th>Usuario</th>
+              <th>Acción</th>
+              <th>Estado</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let activity of filteredActivity">
+              <td>{{ activity.fecha | date:'medium' }}</td>
+              <td>{{ activity.cajaName }}</td>
+              <td>{{ activity.usuario }}</td>
+              <td>{{ activity.accion }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="activity.estado">
+                  <i [ngClass]="activity.estado === 'exitoso' ? 'fas fa-check' : 'fas fa-times'"></i>
+                  {{ activity.estado }}
+                </span>
+              </td>
+              <td class="ip-address">{{ activity.ip }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="modal-pagination">
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="previousPage()">
+          <i class="fas fa-chevron-left"></i>
+          Anterior
+        </button>
+        <span class="pagination-info">
+          Página {{ currentPage }} de {{ totalPages }} ({{ totalRecords }} registros)
+        </span>
+        <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
+          Siguiente
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Top Cajas Completo -->
+<div class="modal-overlay" *ngIf="showTopCajasModal" (click)="closeTopCajasModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fas fa-trophy"></i>
+        <div>
+          <h3>Ranking Completo de Cajas</h3>
+          <span class="modal-subtitle">Estadísticas detalladas de uso</span>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="closeTopCajasModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-content">
+      <div class="ranking-stats">
+        <div class="ranking-stat-card">
+          <i class="fas fa-crown"></i>
+          <div>
+            <h4>Caja Más Usada</h4>
+            <p>{{ topCajas[0]?.name }}</p>
+            <span>{{ topCajas[0]?.accesos }} accesos</span>
+          </div>
+        </div>
+        <div class="ranking-stat-card">
+          <i class="fas fa-clock"></i>
+          <div>
+            <h4>Promedio Diario</h4>
+            <p>{{ averageDailyAccess }} accesos</p>
+            <span>últimos 30 días</span>
+          </div>
+        </div>
+        <div class="ranking-stat-card">
+          <i class="fas fa-calendar-week"></i>
+          <div>
+            <h4>Día Más Activo</h4>
+            <p>{{ mostActiveDay }}</p>
+            <span>{{ mostActiveDayCount }} accesos</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="full-ranking-list">
+        <div class="ranking-item-full" *ngFor="let caja of allCajasRanking; let i = index">
+          <div class="ranking-position-full">
+            <span class="position-number">{{ i + 1 }}</span>
+            <i class="fas fa-medal" *ngIf="i < 3" [ngClass]="getMedalClass(i)"></i>
+          </div>
+          
+          <div class="caja-info">
+            <div class="caja-name">{{ caja.name }}</div>
+            <div class="caja-id">{{ caja.id }}</div>
+          </div>
+          
+          <div class="usage-stats">
+            <div class="stat-item">
+              <span class="stat-label">Accesos Totales</span>
+              <span class="stat-value">{{ caja.accesos }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Último Acceso</span>
+              <span class="stat-value">{{ caja.ultimoAcceso | date:'short' }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Promedio Semanal</span>
+              <span class="stat-value">{{ caja.promedioSemanal }}</span>
+            </div>
+          </div>
+          
+          <div class="usage-bar-container">
+            <div class="usage-bar">
+              <div class="usage-fill" [style.width.%]="caja.percentage"></div>
+            </div>
+            <span class="usage-percentage">{{ caja.percentage }}%</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -21,8 +21,9 @@
 
           <div class="avatar-section">
             <div class="avatar-wrapper">
-              <img [src]="userProfile.avatar || '/assets/default-avatar.png'" 
-                   alt="Avatar del usuario" class="avatar">
+              <div class="avatar">
+                <i class="fas fa-user"></i>
+              </div>
               <button class="avatar-edit-btn" *ngIf="isEditing" (click)="changeAvatar()">
                 <i class="fas fa-camera"></i>
               </button>
@@ -128,14 +129,6 @@
           </div>
           
           <div class="card-content">
-            <div class="setting-item">
-              <div class="setting-info">
-                <h3>Desactivar Cuenta</h3>
-                <p>Desactiva tu cuenta temporalmente</p>
-              </div>
-              <button class="btn btn-danger" (click)="deactivateAccount()">Desactivar</button>
-            </div>
-
             <div class="setting-item">
               <div class="setting-info">
                 <h3>Eliminar Cuenta</h3>

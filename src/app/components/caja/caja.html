@@ -7,11 +7,13 @@
       </div>
       <div class="caja-details">
         <h3 class="caja-name neo-text-white">{{ cajaData.name }}</h3>
-        <p class="caja-id neo-text-lavender">{{ cajaData.id }}</p>
-        <span class="status-badge neo-badge" [ngClass]="getStatusColor(cajaData.status)">
-          <i [ngClass]="getStatusIcon(cajaData.status)"></i>
-          {{ cajaData.status.toUpperCase() }}
-        </span>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <p class="caja-id neo-text-lavender">{{ cajaData.id }}</p>
+          <span class="status-badge neo-badge" [ngClass]="getStatusColor(cajaData.status)">
+            <i [ngClass]="getStatusIcon(cajaData.status)"></i>
+            {{ cajaData.status.toUpperCase() }}
+          </span>
+        </div>
       </div>
     </div>
 
@@ -23,16 +25,10 @@
           {{ cajaData.isLocked ? 'CERRADA' : 'ABIERTA' }}
         </span>
       </div>
-      
-      <div class="status-item neo-status-item">
-        <div class="battery-indicator neo-battery">
-          <i class="fas fa-battery-three-quarters neo-icon-secondary"></i>
-          <span class="battery-percentage neo-text-white">{{ cajaData.batteryLevel }}%</span>
-        </div>
-      </div>
 
       <div class="status-item neo-status-item">
         <i class="fas fa-clock neo-icon-secondary"></i>
+        <span class="last-access-time neo-text-lavender">Última vez abierta</span>
         <span class="last-access-time neo-text-lavender">{{ formatTimeAgo(cajaData.lastAccess) }}</span>
       </div>
     </div>
@@ -44,11 +40,6 @@
       <i class="fas fa-sensors"></i>
       <span>Ver Sensores</span>
       <span class="sensors-badge neo-badge-count">{{ getSensorCount() }}</span>
-    </button>
-    
-    <button class="action-button secondary neo-btn-secondary">
-      <i class="fas fa-chart-line"></i>
-      <span>Estadísticas</span>
     </button>
     
     <button class="action-button secondary neo-btn-secondary">
@@ -133,31 +124,41 @@
 
     <div class="sensor-modal-content neo-modal-content">
       
-      <!-- NFC Details -->
+      <!-- NFC Details - Simplificado solo para estado activo/inactivo -->
       <div *ngIf="selectedSensor === 'nfc'" class="sensor-detail-content neo-detail-section">
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Última tarjeta:</span>
-          <span class="mono neo-text-value">{{ getSensorData('nfc').cardId }}</span>
+          <span class="neo-text-label">Estado del NFC:</span>
+          <span class="neo-text-value" [ngClass]="getSensorData('nfc').isActive ? 'text-success' : 'text-danger'">
+            {{ getSensorData('nfc').isActive ? 'ACTIVO' : 'INACTIVO' }}
+          </span>
         </div>
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Señal:</span>
-          <span class="neo-text-value">{{ getSensorData('nfc').signalStrength }}%</span>
+          <span class="neo-text-label">Última actividad:</span>
+          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('nfc').lastActivity) }} atrás</span>
         </div>
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Última lectura:</span>
-          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('nfc').lastRead) }} atrás</span>
+          <span class="neo-text-label">Tiempo en línea:</span>
+          <span class="neo-text-value">{{ getSensorData('nfc').uptime }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Lecturas totales:</span>
+          <span class="neo-text-value">{{ getSensorData('nfc').totalReads }}</span>
         </div>
       </div>
 
-      <!-- Display Details -->
+      <!-- Display Details - Cambiar a sistema de PIN -->
       <div *ngIf="selectedSensor === 'display'" class="sensor-detail-content neo-detail-section">
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Mensaje actual:</span>
-          <span class="neo-text-value">{{ getSensorData('display').currentMessage }}</span>
+          <span class="neo-text-label">Estado del PIN:</span>
+          <span class="neo-text-value">{{ getSensorData('display').pinStatus }}</span>
         </div>
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Brillo:</span>
-          <span class="neo-text-value">{{ getSensorData('display').brightness }}%</span>
+          <span class="neo-text-label">Último acceso:</span>
+          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('display').lastAccess) }} atrás</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Intentos fallidos:</span>
+          <span class="neo-text-value">{{ getSensorData('display').failedAttempts }}</span>
         </div>
         <div class="detail-row neo-detail-row">
           <span class="neo-text-label">Tiempo activo:</span>
@@ -209,21 +210,23 @@
         </div>
       </div>
 
-      <!-- Weight Details -->
+      <!-- Weight Details - Cambiar a detección de contenido -->
       <div *ngIf="selectedSensor === 'weight'" class="sensor-detail-content neo-detail-section">
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Peso actual:</span>
-          <span class="value-highlight neo-value-highlight">{{ getSensorData('weight').current }} {{ getSensorData('weight').unit }}</span>
+          <span class="neo-text-label">Estado del contenido:</span>
+          <span class="value-highlight neo-value-highlight">{{ getSensorData('weight').hasContent ? 'CON CONTENIDO' : 'VACÍA' }}</span>
         </div>
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Peso base:</span>
-          <span class="neo-text-value">{{ getSensorData('weight').baseline }} {{ getSensorData('weight').unit }}</span>
+          <span class="neo-text-label">Peso detectado:</span>
+          <span class="neo-text-value">{{ getSensorData('weight').current }} {{ getSensorData('weight').unit }}</span>
         </div>
         <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Diferencia:</span>
-          <span class="neo-text-value" [ngClass]="Math.abs(getSensorData('weight').current - getSensorData('weight').baseline) > getSensorData('weight').threshold ? 'text-warning' : 'text-success'">
-            {{ getSensorData('weight').current > getSensorData('weight').baseline ? '+' : '' }}{{ (getSensorData('weight').current - getSensorData('weight').baseline).toFixed(1) }} {{ getSensorData('weight').unit }}
-          </span>
+          <span class="neo-text-label">Umbral de detección:</span>
+          <span class="neo-text-value">{{ getSensorData('weight').threshold }} {{ getSensorData('weight').unit }}</span>
+        </div>
+        <div class="detail-row neo-detail-row">
+          <span class="neo-text-label">Última variación:</span>
+          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('weight').lastChange) }} atrás</span>
         </div>
       </div>
 

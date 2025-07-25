@@ -9,15 +9,30 @@
 @import '@fortawesome/fontawesome-free/css/all.css';
 @import 'animate.css';
 
+/* Variables globales - misma paleta que el home */
+:root {
+  --purple-dark: #2d1b69;
+  --purple-vibrant: #9c27b0;
+  --purple-light: #ba68c8;
+  --dark-bg: #121212;
+  --dark-card: #1E1E1E;
+  --dark-surface: #242424;
+  --dark-border: #333333;
+  --dark-text: #E0E0E0;
+  --dark-text-secondary: #A0A0A0;
+}
+
 /* Estilos globales */
 html, body {
   height: 100%;
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 * {
@@ -29,11 +44,6 @@ body {
 
 /* Aplicar Poppins globalmente */
 * {
-  font-family: 'Poppins', sans-serif;
-}
-
-/* O si prefieres ser más específico */
-body {
   font-family: 'Poppins', sans-serif;
 }
 
@@ -53,75 +63,138 @@ body {
   justify-content: center;
 }
 
-/* Mejoras para Material Design */
+/* Mejoras para Material Design con tema oscuro */
 .mat-mdc-form-field {
   width: 100%;
+  
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--dark-surface) !important;
+  }
+  
+  .mat-mdc-form-field-input {
+    color: var(--dark-text) !important;
+  }
+  
+  .mat-mdc-form-field-label {
+    color: var(--dark-text-secondary) !important;
+  }
+  
+  .mat-mdc-form-field-underline::before {
+    border-bottom-color: var(--dark-border) !important;
+  }
+  
+  .mat-mdc-form-field-focus-overlay {
+    background-color: var(--purple-light) !important;
+    opacity: 0.1 !important;
+  }
 }
 
 .mat-mdc-card {
   border-radius: 12px !important;
+  background-color: var(--dark-card) !important;
+  color: var(--dark-text) !important;
+  border: 1px solid var(--dark-border) !important;
 }
 
-/* Estilos para botones personalizados */
 .mat-mdc-raised-button {
   border-radius: 12px !important;
+  
+  &.mat-primary {
+    background-color: var(--purple-vibrant) !important;
+    color: white !important;
+  }
 }
 
-/* filepath: src/styles.scss */
-/* ...existing code... */
-
-:root {
-  /* Colores modo claro */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --border-color: #e0e0e0;
-  --sidebar-bg: #2c3e50;
-  --sidebar-text: #ecf0f1;
-  --card-bg: #ffffff;
-  --shadow: rgba(0, 0, 0, 0.1);
+/* Estilos para tablas */
+.mat-mdc-table {
+  background-color: var(--dark-card) !important;
+  color: var(--dark-text) !important;
 }
 
-.dark-theme {
-  /* Colores modo oscuro */
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #2d2d2d;
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
-  --border-color: #404040;
-  --sidebar-bg: #1e293b;
-  --sidebar-text: #f1f5f9;
-  --card-bg: #2d2d2d;
-  --shadow: rgba(0, 0, 0, 0.3);
+.mat-mdc-header-row {
+  background-color: var(--dark-surface) !important;
 }
 
-/* Aplicar variables CSS */
-body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+.mat-mdc-header-cell {
+  color: var(--dark-text) !important;
+  border-bottom-color: var(--dark-border) !important;
 }
 
-/* Estilos para componentes comunes */
-.card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px var(--shadow);
-  transition: all 0.3s ease;
+.mat-mdc-cell {
+  color: var(--dark-text) !important;
+  border-bottom-color: var(--dark-border) !important;
 }
 
-.table {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
+.mat-mdc-row:hover {
+  background-color: var(--dark-surface) !important;
 }
 
-.table th {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border-color: var(--border-color);
+/* Estilos para botones */
+.mat-mdc-button, .mat-mdc-outlined-button {
+  color: var(--dark-text) !important;
+  
+  &:hover {
+    background-color: var(--dark-surface) !important;
+  }
 }
 
-.table td {
-  border-color: var(--border-color);
+/* Estilos para chips */
+.mat-mdc-chip {
+  background-color: var(--dark-surface) !important;
+  color: var(--dark-text) !important;
+  border: 1px solid var(--dark-border) !important;
+}
+
+/* Estilos para menús */
+.mat-mdc-menu-panel {
+  background-color: var(--dark-card) !important;
+  border: 1px solid var(--dark-border) !important;
+}
+
+.mat-mdc-menu-item {
+  color: var(--dark-text) !important;
+  
+  &:hover {
+    background-color: var(--dark-surface) !important;
+  }
+}
+
+/* Estilos para dialogs */
+.mat-mdc-dialog-container {
+  background-color: var(--dark-card) !important;
+  color: var(--dark-text) !important;
+}
+
+/* Estilos para modales globales */
+.modal-overlay {
+  background-color: var(--dark-bg) !important;
+  backdrop-filter: none !important;
+}
+
+.modal-backdrop {
+  background-color: var(--dark-bg) !important;
+  opacity: 1 !important;
+}
+
+/* Asegurar que todos los overlays de modales tengan fondo sólido */
+[class*="modal-overlay"] {
+  background-color: var(--dark-bg) !important;
+}
+
+[class*="overlay"] {
+  background-color: var(--dark-bg) !important;
+}
+
+/* Layout principal */
+.main-content {
+  margin-left: 260px;
+  background-color: var(--dark-bg);
+  min-height: 100vh;
+  color: var(--dark-text);
+}
+
+@media screen and (max-width: 768px) {
+  .main-content {
+    margin-left: 70px;
+  }
 }

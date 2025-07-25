@@ -112,37 +112,48 @@
     position: relative;
     
     .avatar {
-      width: 140px;
-      height: 140px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid var(--purple-vibrant);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: var(--dark-surface);
+      border: 2px solid var(--dark-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark-text);
+      font-size: 2rem;
+      transition: transform 0.2s ease;
       
       &:hover {
-        transform: scale(1.08);
-        box-shadow: 0 0 20px rgba(156, 39, 176, 0.3);
+        transform: scale(1.05);
+      }
+      
+      :global(.dark-theme) & {
+        background-color: var(--dark-surface);
+        border-color: var(--dark-border);
+        color: var(--dark-text);
       }
     }
     
     .avatar-edit-btn {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: var(--purple-vibrant);
-      color: white;
-      border: none;
+      bottom: 0;
+      right: 0;
+      background: var(--dark-surface);
+      color: var(--dark-text);
+      border: 1px solid var(--dark-border);
       border-radius: 50%;
-      width: 44px;
-      height: 44px;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease;
+      transition: all 0.2s ease;
+      font-size: 0.8rem;
       
       &:hover {
-        background: var(--purple-dark);
+        background: var(--dark-border);
         transform: scale(1.1);
       }
     }
@@ -328,8 +339,15 @@
 
 @media (max-width: 480px) {
   .avatar-section .avatar-wrapper .avatar {
-    width: 110px;
-    height: 110px;
+    width: 70px;
+    height: 70px;
+    font-size: 1.5rem;
+  }
+  
+  .avatar-section .avatar-wrapper .avatar-edit-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
   }
   
   .profile-card {

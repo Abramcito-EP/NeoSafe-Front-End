@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth';
 import { User } from '../../../models/user.model';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 // Material imports
 import { MatListModule } from '@angular/material/list';
@@ -25,41 +25,8 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss'
 })
-export class SidebarComponent implements OnInit, OnDestroy {
-profileForm: any;
-securitySettings: any;
-onSubmit() {
-throw new Error('Method not implemented.');
-}
-isEditing: any;
-userProfile: any;
-changeAvatar() {
-throw new Error('Method not implemented.');
-}
-toggleEdit() {
-throw new Error('Method not implemented.');
-}
-cancelEdit() {
-throw new Error('Method not implemented.');
-}
-openChangePasswordModal() {
-throw new Error('Method not implemented.');
-}
-toggleTwoFactor() {
-throw new Error('Method not implemented.');
-}
-viewActiveSessions() {
-throw new Error('Method not implemented.');
-}
-privacySettings: any;
-deactivateAccount() {
-throw new Error('Method not implemented.');
-}
-deleteAccount() {
-throw new Error('Method not implemented.');
-}
+export class SidebarComponent implements OnInit {
   currentUser$: Observable<User | null>;
-  private themeSubscription?: Subscription;
 
   constructor(private authService: AuthService) {
     this.currentUser$ = this.authService.currentUser$;
@@ -67,10 +34,6 @@ throw new Error('Method not implemented.');
 
   ngOnInit(): void {
     // Inicialización básica del componente
-  }
-
-  ngOnDestroy(): void {
-    this.themeSubscription?.unsubscribe();
   }
 
   logout(): void {
@@ -88,3 +51,5 @@ throw new Error('Method not implemented.');
     });
   }
 }
+     
+
