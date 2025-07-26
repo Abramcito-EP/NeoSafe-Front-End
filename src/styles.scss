@@ -147,7 +147,7 @@ body {
 
 /* Estilos para menús */
 .mat-mdc-menu-panel {
-  background-color: var(--dark-card) !important;
+
   border: 1px solid var(--dark-border) !important;
 }
 
@@ -174,15 +174,6 @@ body {
 .modal-backdrop {
   background-color: var(--dark-bg) !important;
   opacity: 1 !important;
-}
-
-/* Asegurar que todos los overlays de modales tengan fondo sólido */
-[class*="modal-overlay"] {
-  background-color: var(--dark-bg) !important;
-}
-
-[class*="overlay"] {
-  background-color: var(--dark-bg) !important;
 }
 
 /* Layout principal */
