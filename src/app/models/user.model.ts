@@ -21,5 +21,5 @@ export interface RegisterData {
   lastName: string;
   email: string;
   password: string;
-  birthDate?: Date;
+  birthDate?: string; // Siempre string en formato "YYYY-MM-DD HH:mm:ss"
 }
