@@ -38,10 +38,11 @@
         <span>Mis Cajas</span>
       </a>
       
-      <!-- Proveedores -->
+      <!-- Proveedores - Solo para administradores -->
       <a routerLink="/proveedores" 
          routerLinkActive="active" 
-         class="nav-link">
+         class="nav-link"
+         *ngIf="isAdmin()">
         <i class="fas fa-truck"></i>
         <span>Proveedores</span>
       </a>

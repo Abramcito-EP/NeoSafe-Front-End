@@ -22,8 +22,10 @@ interface UserProfile {
 })
 export class PerfilComponent implements OnInit {
   profileForm: FormGroup;
+  passwordForm: FormGroup;
   isEditing = false;
   isLoading = false;
+  showPasswordModal = false;
   
   userProfile: UserProfile = {
     name: '',
@@ -43,6 +45,26 @@ export class PerfilComponent implements OnInit {
       email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       birthDate: [{ value: '', disabled: true }]
     });
+
+    this.passwordForm = this.fb.group({
+      currentPassword: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      password_confirmation: ['', [Validators.required]]
+    }, {
+      validators: this.passwordMatchValidator
+    });
+  }
+
+  passwordMatchValidator(form: FormGroup) {
+    const password = form.get('password');
+    const confirmPassword = form.get('password_confirmation');
+    
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    }
+    
+    return null;
   }
 
   ngOnInit() {
@@ -150,7 +172,39 @@ export class PerfilComponent implements OnInit {
   }
 
   openChangePasswordModal() {
-    console.log('Abrir modal de cambio de contraseña');
+    this.showPasswordModal = true;
+    this.passwordForm.reset();
+  }
+
+  closePasswordModal() {
+    this.showPasswordModal = false;
+    this.passwordForm.reset();
+  }
+
+  onPasswordSubmit() {
+    if (this.passwordForm.valid && !this.isLoading) {
+      this.isLoading = true;
+      
+      const passwordData = {
+        currentPassword: this.passwordForm.value.currentPassword,
+        password: this.passwordForm.value.password,
+        password_confirmation: this.passwordForm.value.password_confirmation
+      };
+
+      this.http.put<any>(`${environment.apiUrl}/auth/perfil/password`, passwordData).subscribe({
+        next: (response) => {
+          console.log('Contraseña actualizada exitosamente');
+          this.closePasswordModal();
+          this.isLoading = false;
+          alert('Contraseña actualizada correctamente');
+        },
+        error: (error) => {
+          console.error('Error al actualizar contraseña:', error);
+          this.isLoading = false;
+          alert('Error al actualizar contraseña: ' + (error.error?.message || 'Error desconocido'));
+        }
+      });
+    }
   }
 
   deleteAccount() {

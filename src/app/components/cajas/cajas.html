@@ -1,30 +1,33 @@
 <div class="page-container">
   <app-sidebar></app-sidebar>
   <div class="main-content">
+    <!-- Header Section -->
     <div class="content-header">
-      <div class="header-text">
-        <h1 class="title-gradient">Mis Cajas</h1>
-        <p class="subtitle">Gestiona todas tus cajas de seguridad con facilidad</p>
-      </div>
-      
-      <div class="header-actions">
-        <button class="refresh-btn" (click)="refreshAllData()" [disabled]="isLoading" [ngClass]="{ 'loading': isLoading }" aria-label="Actualizar datos de las cajas">
-          <i class="fas fa-sync-alt" [ngClass]="{ 'fa-spin': isLoading }"></i>
-          <span>{{ isLoading ? 'Cargando...' : 'Actualizar' }}</span>
-        </button>
-        
-        <button class="add-caja-btn" (click)="addCaja()" aria-label="Agregar nueva caja de seguridad">
-          <i class="fas fa-plus"></i>
-          <span>Agregar Caja</span>
-        </button>
-        
-        <div class="connection-indicator" [ngClass]="{ 'connected': isConnected, 'disconnected': !isConnected }" role="status" aria-live="polite">
-          <i [ngClass]="isConnected ? 'fas fa-wifi' : 'fas fa-wifi-slash'"></i>
-          <span>{{ isConnected ? 'Conectado' : 'Desconectado' }}</span>
+      <div class="header-container">
+        <div class="header-info">
+          <h1>Mis Cajas de Seguridad</h1>
+          <p>Gestiona todas tus cajas de seguridad con facilidad y control total</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary" (click)="refreshAllData()" [disabled]="isLoading" [ngClass]="{ 'loading': isLoading }" aria-label="Actualizar datos de las cajas">
+            <i class="fas fa-sync-alt" [ngClass]="{ 'fa-spin': isLoading }"></i>
+            <span>{{ isLoading ? 'Cargando...' : 'Actualizar' }}</span>
+          </button>
+          
+          <button class="btn btn-primary" (click)="addCaja()" aria-label="Agregar nueva caja de seguridad">
+            <i class="fas fa-plus"></i>
+            <span>Agregar Caja</span>
+          </button>
+          
+          <div class="connection-indicator" [ngClass]="{ 'connected': isConnected, 'disconnected': !isConnected }" role="status" aria-live="polite">
+            <i [ngClass]="isConnected ? 'fas fa-wifi' : 'fas fa-wifi-slash'"></i>
+            <span>{{ isConnected ? 'Conectado' : 'Desconectado' }}</span>
+          </div>
         </div>
       </div>
     </div>
     
+    <!-- Content Body -->
     <div class="content-body">
       <!-- Loading state -->
       <div class="loading-state" *ngIf="isLoading">

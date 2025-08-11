@@ -9,9 +9,6 @@ import { environment } from '../../environments/environment.development';
   providedIn: 'root'
 })
 export class AuthService {
-  updateCurrentUser(user: any) {
-    throw new Error('Method not implemented.');
-  }
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser$: Observable<User | null>;
 
@@ -23,14 +20,35 @@ export class AuthService {
     this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
+  updateCurrentUser(user: User): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+    
+    // Actualizar el usuario en localStorage
+    localStorage.setItem('user', JSON.stringify(user));
+    // Actualizar el BehaviorSubject
+    this.currentUserSubject.next(user);
+    console.log('Usuario actualizado en el servicio:', user);
+  }
+
   login(loginData: LoginData): Observable<AuthResponse> {
-    console.log('Intentando hacer login con:', loginData);
+    console.log('🔑 AuthService: Iniciando login con:', loginData);
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, loginData)
       .pipe(
         tap(response => {
-          console.log('Login exitoso, respuesta del servidor:', response);
+          console.log('✅ AuthService: Login exitoso:', response);
           this.setSession(response);
-          console.log('Sesión establecida, usuario actual:', this.currentUserSubject.value);
+          console.log('✅ AuthService: Sesión establecida para:', response.user.email);
+        }),
+        catchError(error => {
+          console.error('❌ AuthService: Error en login:', error);
+          
+          // NO limpiar sesión aquí para errores de login
+          // Solo limpiar para errores de token inválido en otras peticiones
+          
+          // Re-lanzar el error sin modificaciones para que el componente lo maneje
+          throw error;
         })
       );
   }
@@ -93,8 +111,28 @@ export class AuthService {
     console.log('isLoggedIn: Token encontrado?', !!token);
     console.log('isLoggedIn: Usuario encontrado?', !!user);
     
-    // Para tokens OAT de AdonisJS, solo verificamos que existan
-    return !!(token && user);
+    // Verificación más estricta
+    if (!token || !user) {
+      console.log('isLoggedIn: Falta token o usuario');
+      return false;
+    }
+    
+    try {
+      // Verificar que el usuario se pueda parsear
+      const parsedUser = JSON.parse(user);
+      if (!parsedUser || !parsedUser.id) {
+        console.log('isLoggedIn: Usuario inválido en localStorage');
+        return false;
+      }
+      
+      console.log('isLoggedIn: Autenticación válida para usuario:', parsedUser.email);
+      return true;
+    } catch (error) {
+      console.error('isLoggedIn: Error parseando usuario:', error);
+      // Limpiar datos corruptos
+      this.clearSession();
+      return false;
+    }
   }
 
   // Alias para compatibilidad
@@ -160,10 +198,11 @@ export class AuthService {
       return;
     }
     
+    console.log('🧹 Limpiando sesión completamente');
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
     this.currentUserSubject.next(null);
-    console.log('Sesión limpiada localmente');
+    console.log('🧹 Sesión limpiada - usuario deslogueado');
   }
 
   private setSession(authResult: AuthResponse): void {

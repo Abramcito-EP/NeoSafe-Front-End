@@ -256,7 +256,31 @@
   }
 }
 
-// Animaciones personalizadas
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 8px;
+  color: #f44336;
+  font-size: 0.9rem;
+  animation: slideDown 0.3s ease-out;
+  
+  mat-icon {
+    font-size: 1.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  
+  span {
+    flex: 1;
+    font-weight: 500;
+  }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -270,4 +294,15 @@
 
 .animate__fadeInUp {
   animation: fadeInUp 0.6s ease-out;
+}
+
+// Estilos para snackbars personalizados
+:global(.success-snackbar) {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+:global(.error-snackbar) {
+  background-color: #f44336 !important;
+  color: white !important;
 }

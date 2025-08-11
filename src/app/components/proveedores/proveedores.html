@@ -1,7 +1,25 @@
 <app-sidebar></app-sidebar>
 <div class="main-content">
-  <div class="container">
-    <h1>Gestión de Proveedores</h1>
-    <p>Aquí puedes gestionar tus proveedores</p>
+  <!-- Header Section -->
+  <div class="content-header">
+    <div class="header-container">
+      <div class="header-info">
+        <h1>Gestión de Proveedores</h1>
+        <p>Administra y controla todos tus proveedores de confianza</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="openAddProviderModal()">
+          <i class="fas fa-plus"></i>
+          <span>Agregar Proveedor</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Body -->
+  <div class="content-body">
+    <div class="container">
+      <p>Aquí se mostrará la lista de proveedores</p>
+    </div>
   </div>
 </div>

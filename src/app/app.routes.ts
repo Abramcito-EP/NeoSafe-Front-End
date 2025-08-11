@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './guards/auth-guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   { 
@@ -29,7 +30,7 @@ export const routes: Routes = [
   {
     path:'proveedores',
     loadComponent: () => import('./components/proveedores/proveedores').then(c => c.ProveedoresComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard, adminGuard]
   },
   { 
     path: '', 
