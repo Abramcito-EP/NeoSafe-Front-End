@@ -1,0 +1,14 @@
+.main-content {
+  margin-left: 260px;
+  padding: 2rem;
+  min-height: 100vh;
+  background-color: var(--dark-bg, #121212);
+  color: var(--dark-text, #E0E0E0);
+  transition: margin-left 0.3s ease;
+}
+
+@media screen and (max-width: 768px) {
+  .main-content {
+    margin-left: 70px;
+  }
+}

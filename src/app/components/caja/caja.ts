@@ -11,13 +11,60 @@ export interface CajaData {
   lastAccess: string;
   batteryLevel: number;
   sensors: {
-    nfc: any;
-    display: any;
-    temperature: any;
-    humidity: any;
-    lock: any;
-    weight: any;
-    camera: any;
+    nfc: {
+      status: string;
+      isActive: boolean;
+      lastActivity: string;
+      uptime: string;
+      totalReads: number;
+      signalStrength: number;
+    };
+    display: {
+      status: string;
+      pinStatus: string;
+      lastAccess: string;
+      failedAttempts: number;
+      uptime: string;
+      brightness: number;
+    };
+    temperature: {
+      status: string;
+      current: number;
+      min: number;
+      max: number;
+      history: number[];
+    };
+    humidity: {
+      status: string;
+      current: number;
+      min: number;
+      max: number;
+      history: number[];
+    };
+    lock: {
+      status: string;
+      isLocked: boolean;
+      attempts: number;
+      lastUnlock: string;
+      mechanism: string;
+    };
+    weight: {
+      status: string;
+      current: number;
+      baseline: number;
+      threshold: number;
+      unit: string;
+      hasContent: boolean;
+      lastChange: string;
+    };
+    camera: {
+      status: string;
+      isRecording: boolean;
+      resolution: string;
+      fps: number;
+      storageUsed: number;
+      storageTotal: number;
+    };
   };
 }
 

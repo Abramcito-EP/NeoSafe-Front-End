@@ -1,9 +1,20 @@
+export interface Role {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface User {
   id: number;
   name: string;
   lastName: string;
   email: string;
   birthDate?: string;
+  role?: Role; // Agregar la propiedad role
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AuthResponse {

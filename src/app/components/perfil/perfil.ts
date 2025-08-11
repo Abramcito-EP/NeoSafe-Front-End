@@ -3,30 +3,15 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from "../shared/sidebar/sidebar";
+import { AuthService } from '../../services/auth';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface UserProfile {
-  firstName: string;
+  name: string;
   lastName: string;
   email: string;
-  phone: string;
   birthDate: string;
-  gender: string;
-  avatar?: string;
-}
-
-interface SecuritySettings {
-  twoFactorEnabled: boolean;
-}
-
-interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  marketing: boolean;
-}
-
-interface PrivacySettings {
-  publicProfile: boolean;
-  showOnlineStatus: boolean;
 }
 
 @Component({
@@ -36,45 +21,27 @@ interface PrivacySettings {
   styleUrl: './perfil.scss'
 })
 export class PerfilComponent implements OnInit {
-changeAvatar() {
-throw new Error('Method not implemented.');
-}
   profileForm: FormGroup;
   isEditing = false;
+  isLoading = false;
   
   userProfile: UserProfile = {
-    firstName: 'Juan',
-    lastName: 'Pérez',
-    email: 'juan.perez@example.com',
-    phone: '+1234567890',
-    birthDate: '1990-01-01',
-    gender: 'masculino',
-    avatar: ''
+    name: '',
+    lastName: '',
+    email: '',
+    birthDate: ''
   };
 
-  securitySettings: SecuritySettings = {
-    twoFactorEnabled: false
-  };
-
-  notificationSettings: NotificationSettings = {
-    email: true,
-    push: true,
-    marketing: false
-  };
-
-  privacySettings: PrivacySettings = {
-    publicProfile: true,
-    showOnlineStatus: true
-  };
-
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private http: HttpClient
+  ) {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.pattern(/^\+?[\d\s-()]+$/)]],
-      birthDate: [''],
-      gender: ['']
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      birthDate: [{ value: '', disabled: true }]
     });
   }
 
@@ -83,56 +50,113 @@ throw new Error('Method not implemented.');
   }
 
   loadUserProfile() {
-    this.profileForm.patchValue(this.userProfile);
+    this.isLoading = true;
+    this.http.get<any>(`${environment.apiUrl}/auth/perfil`).subscribe({
+      next: (response) => {
+        this.userProfile = {
+          name: response.name,
+          lastName: response.lastName,
+          email: response.email,
+          birthDate: response.birthDate?.split('T')[0] || ''
+        };
+        
+        this.profileForm.patchValue({
+          firstName: this.userProfile.name,
+          lastName: this.userProfile.lastName,
+          email: this.userProfile.email,
+          birthDate: this.userProfile.birthDate
+        });
+        
+        // Asegurar que los campos estén deshabilitados por defecto
+        if (!this.isEditing) {
+          this.profileForm.get('firstName')?.disable();
+          this.profileForm.get('lastName')?.disable();
+        }
+        this.profileForm.get('email')?.disable();
+        this.profileForm.get('birthDate')?.disable();
+        
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar perfil:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  onSubmit() {
+    if (this.profileForm.valid && !this.isLoading) {
+      this.isLoading = true;
+      
+      // Solo enviar name y lastName para actualización
+      const updateData = {
+        name: this.profileForm.get('firstName')?.value,
+        lastName: this.profileForm.get('lastName')?.value
+      };
+
+      this.http.put<any>(`${environment.apiUrl}/auth/perfil`, updateData).subscribe({
+        next: (response) => {
+          console.log('Perfil actualizado exitosamente');
+          this.userProfile = {
+            name: response.user.name,
+            lastName: response.user.lastName,
+            email: response.user.email,
+            birthDate: response.user.birthDate?.split('T')[0] || ''
+          };
+          this.isEditing = false;
+          this.isLoading = false;
+          
+          // Actualizar el usuario en el servicio de autenticación
+          this.authService.updateCurrentUser(response.user);
+        },
+        error: (error) => {
+          console.error('Error al actualizar perfil:', error);
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  changeAvatar() {
+    console.log('Cambiar avatar - función pendiente de implementar');
   }
 
   toggleEdit() {
     this.isEditing = !this.isEditing;
-    if (!this.isEditing) {
-      this.loadUserProfile(); // Recargar datos originales
+    
+    if (this.isEditing) {
+      // Solo habilitar name y lastName para edición
+      this.profileForm.get('firstName')?.enable();
+      this.profileForm.get('lastName')?.enable();
+      this.profileForm.get('email')?.disable();
+      this.profileForm.get('birthDate')?.disable();
+    } else {
+      // Deshabilitar todos los campos cuando no se está editando
+      this.profileForm.get('firstName')?.disable();
+      this.profileForm.get('lastName')?.disable();
+      this.profileForm.get('email')?.disable();
+      this.profileForm.get('birthDate')?.disable();
+      this.loadUserProfile();
     }
   }
 
   cancelEdit() {
     this.isEditing = false;
+    this.profileForm.get('firstName')?.disable();
+    this.profileForm.get('lastName')?.disable();
+    this.profileForm.get('email')?.disable();
+    this.profileForm.get('birthDate')?.disable();
     this.loadUserProfile();
-  }
-
-  onSubmit() {
-    if (this.profileForm.valid) {
-      this.userProfile = { ...this.userProfile, ...this.profileForm.value };
-      console.log('Perfil actualizado:', this.userProfile);
-      // Aquí iría la llamada al servicio para guardar los datos
-      this.isEditing = false;
-    }
   }
 
   openChangePasswordModal() {
     console.log('Abrir modal de cambio de contraseña');
-    // Implementar lógica para abrir modal
-  }
-
-  toggleTwoFactor() {
-    console.log('Toggle 2FA:', this.securitySettings.twoFactorEnabled);
-    // Implementar lógica para activar/desactivar 2FA
-  }
-
-  viewActiveSessions() {
-    console.log('Ver sesiones activas');
-    // Implementar lógica para mostrar sesiones activas
-  }
-
-  deactivateAccount() {
-    if (confirm('¿Estás seguro de que quieres desactivar tu cuenta?')) {
-      console.log('Desactivar cuenta');
-      // Implementar lógica para desactivar cuenta
-    }
   }
 
   deleteAccount() {
     if (confirm('¿Estás seguro de que quieres eliminar permanentemente tu cuenta? Esta acción no se puede deshacer.')) {
       console.log('Eliminar cuenta');
-      // Implementar lógica para eliminar cuenta
     }
   }
 }
+

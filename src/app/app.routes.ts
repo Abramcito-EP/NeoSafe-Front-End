@@ -26,6 +26,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/perfil/perfil').then(c => c.PerfilComponent),
     canActivate: [authGuard]
   },
+  {
+    path:'proveedores',
+    loadComponent: () => import('./components/proveedores/proveedores').then(c => c.ProveedoresComponent),
+    canActivate: [authGuard]
+  },
   { 
     path: '', 
     loadComponent: () => import('./components/home/home').then(c => c.HomeComponent)

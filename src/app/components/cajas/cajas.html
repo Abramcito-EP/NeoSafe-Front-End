@@ -57,3 +57,57 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para agregar nueva caja -->
+<div class="add-caja-modal-overlay neo-modal-overlay" 
+     *ngIf="showAddCajaModal" 
+     (click)="closeAddCajaModal()">
+  <div class="add-caja-modal neo-modal-card" (click)="$event.stopPropagation()">
+    <div class="add-caja-modal-header neo-modal-header">
+      <div class="modal-title">
+        <div class="caja-icon-small neo-icon-modal">
+          <i class="fas fa-plus"></i>
+        </div>
+        <div>
+          <h3 class="neo-text-primary">Agregar Nueva Caja</h3>
+          <span class="neo-text-meta">Configura una nueva caja de seguridad</span>
+        </div>
+      </div>
+      <button class="modal-close-btn neo-btn-close" (click)="closeAddCajaModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="add-caja-modal-content neo-modal-content">
+      <form (ngSubmit)="createCaja()" #cajaForm="ngForm">
+        <div class="form-group">
+          <label for="cajaName" class="form-label neo-text-label">Nombre de la Caja</label>
+          <input 
+            type="text" 
+            id="cajaName"
+            [(ngModel)]="newCajaName"
+            name="cajaName"
+            class="form-input neo-input"
+            placeholder="Ej: Caja Fuerte Oficina"
+            required
+            maxlength="50"
+            #nameInput="ngModel">
+          <div class="input-error neo-error-text" *ngIf="nameInput.invalid && nameInput.touched">
+            El nombre de la caja es requerido
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel neo-btn-secondary" (click)="closeAddCajaModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-create neo-btn-primary" [disabled]="cajaForm.invalid || isCreating">
+            <i class="fas fa-plus" *ngIf="!isCreating"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isCreating"></i>
+            {{ isCreating ? 'Creando...' : 'Crear Caja' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
