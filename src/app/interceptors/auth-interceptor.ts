@@ -1,12 +1,5 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpErrorResponse
-} from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -14,22 +7,35 @@ import { AuthService } from '../services/auth';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private authService = Inject(AuthService);
-  private router = Inject(Router);
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object
+    private authService: AuthService,
+    private router: Router
   ) {}
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    console.log('🔄 AuthInterceptor: Interceptando petición:', request.url);
-    console.log('🔄 AuthInterceptor: Método:', request.method);
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('🔄 AuthInterceptor: Interceptando petición:', req.url);
+    console.log('🔄 AuthInterceptor: Método:', req.method);
 
     // Identificar si es una petición de login o registro
-    const isAuthRequest = request.url.includes('/auth/login') || request.url.includes('/auth/register');
+    const isAuthRequest = req.url.includes('/auth/login') || req.url.includes('/auth/register');
     
-    let authReq = request;
-    const token = this.authService.getToken();
+    let authReq = req;
+    
+    // Verificar que authService esté disponible antes de usar getToken
+    let token: string | null = null;
+    
+    try {
+      if (this.authService && typeof this.authService.getToken === 'function') {
+        token = this.authService.getToken();
+      } else {
+        console.warn('🔄 AuthInterceptor: AuthService no disponible o getToken no es función');
+        token = null;
+      }
+    } catch (error) {
+      console.error('🔄 AuthInterceptor: Error obteniendo token:', error);
+      token = null;
+    }
     
     console.log('🔄 AuthInterceptor: Token encontrado?', !!token);
     console.log('🔄 AuthInterceptor: Token (primeros 30 chars):', token ? token.substring(0, 30) + '...' : 'null');
@@ -37,7 +43,7 @@ export class AuthInterceptor implements HttpInterceptor {
     
     if (token && !isAuthRequest) {
       console.log('🔄 AuthInterceptor: Agregando token a headers');
-      authReq = request.clone({
+      authReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
         }
@@ -60,8 +66,10 @@ export class AuthInterceptor implements HttpInterceptor {
           console.log('🔥 AuthInterceptor: Error 401 en petición protegida - Token inválido o expirado');
           console.log('🔥 AuthInterceptor: Limpiando sesión y redirigiendo al login');
           
-          // Limpiar tokens y sesión
-          this.authService.clearSession();
+          // Limpiar tokens y sesión solo si authService está disponible
+          if (this.authService && typeof this.authService.clearSession === 'function') {
+            this.authService.clearSession();
+          }
           
           // Redirigir al login solo si no estamos ya en login
           const currentUrl = this.router.url;
