@@ -23,3 +23,133 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para agregar nuevo proveedor -->
+<div class="add-provider-modal-overlay" 
+     *ngIf="showAddProviderModal" 
+     (click)="closeAddProviderModal()">
+  <div class="add-provider-modal" (click)="$event.stopPropagation()">
+    <div class="add-provider-modal-header">
+      <div class="modal-title">
+        <div class="provider-icon-small">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <div>
+          <h3>Agregar Nuevo Proveedor</h3>
+          <span>Configura un nuevo proveedor del sistema</span>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="closeAddProviderModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="add-provider-modal-content">
+      <form (ngSubmit)="createProvider()" #providerForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">Nombre</label>
+            <input 
+              type="text" 
+              id="firstName"
+              [(ngModel)]="newProvider.firstName"
+              name="firstName"
+              class="form-input"
+              placeholder="Ej: Juan"
+              required
+              maxlength="50"
+              #firstNameInput="ngModel">
+            <div class="input-error" *ngIf="firstNameInput.invalid && firstNameInput.touched">
+              El nombre es requerido
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">Apellido</label>
+            <input 
+              type="text" 
+              id="lastName"
+              [(ngModel)]="newProvider.lastName"
+              name="lastName"
+              class="form-input"
+              placeholder="Ej: Pérez"
+              required
+              maxlength="50"
+              #lastNameInput="ngModel">
+            <div class="input-error" *ngIf="lastNameInput.invalid && lastNameInput.touched">
+              El apellido es requerido
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="birthDate" class="form-label">Fecha de Nacimiento</label>
+          <input 
+            type="date" 
+            id="birthDate"
+            [(ngModel)]="newProvider.birthDate"
+            name="birthDate"
+            class="form-input date-input"
+            required
+            #birthDateInput="ngModel">
+          <div class="input-error" *ngIf="birthDateInput.invalid && birthDateInput.touched">
+            La fecha de nacimiento es requerida
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Correo Electrónico</label>
+          <input 
+            type="email" 
+            id="email"
+            [(ngModel)]="newProvider.email"
+            name="email"
+            class="form-input"
+            placeholder="ejemplo@correo.com"
+            required
+            #emailInput="ngModel">
+          <div class="input-error" *ngIf="emailInput.invalid && emailInput.touched">
+            <span *ngIf="emailInput.errors?.['required']">El correo electrónico es requerido</span>
+            <span *ngIf="emailInput.errors?.['email']">Ingresa un correo electrónico válido</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Contraseña</label>
+          <div class="password-input-container">
+            <input 
+              type="password" 
+              id="password"
+              [(ngModel)]="newProvider.password"
+              name="password"
+              class="form-input"
+              placeholder="Mínimo 6 caracteres"
+              required
+              minlength="6"
+              #passwordInput="ngModel">
+            <div class="password-hint">
+              <i class="fas fa-info-circle"></i>
+              <span>Contraseña por defecto: 123456 (puedes cambiarla)</span>
+            </div>
+          </div>
+          <div class="input-error" *ngIf="passwordInput.invalid && passwordInput.touched">
+            <span *ngIf="passwordInput.errors?.['required']">La contraseña es requerida</span>
+            <span *ngIf="passwordInput.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeAddProviderModal()">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </button>
+          <button type="submit" class="btn-create" [disabled]="providerForm.invalid || isCreating">
+            <i class="fas fa-user-plus" *ngIf="!isCreating"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isCreating"></i>
+            {{ isCreating ? 'Creando...' : 'Crear Proveedor' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
