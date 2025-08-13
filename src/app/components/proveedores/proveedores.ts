@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SidebarComponent } from '../shared/sidebar/sidebar';
 import { AuthService } from '../../services/auth';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface NewProviderData {
   firstName: string;
@@ -34,7 +35,8 @@ export class ProveedoresComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -87,17 +89,32 @@ export class ProveedoresComponent implements OnInit {
     this.isCreating = true;
 
     try {
-      // Simular creación del proveedor (aquí iría la llamada a la API real)
-      console.log('🔄 Creando proveedor:', this.newProvider);
+      // Preparar los datos para el registro como usuario
+      const registerData = {
+        name: this.newProvider.firstName,
+        lastName: this.newProvider.lastName,
+        birthDate: this.formatDateForBackend(this.newProvider.birthDate),
+        email: this.newProvider.email,
+        password: this.newProvider.password
+      };
+
+      console.log('🔄 Registrando proveedor como usuario:', registerData);
       
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simular respuesta exitosa
-      console.log('✅ Proveedor creado exitosamente');
-      alert(`¡Proveedor creado exitosamente!\nNombre: ${this.newProvider.firstName} ${this.newProvider.lastName}\nEmail: ${this.newProvider.email}`);
-      
-      this.closeAddProviderModal();
+      // Llamar al servicio de autenticación para registrar al proveedor como usuario
+      this.authService.register(registerData).subscribe({
+        next: (response) => {
+          console.log('✅ Proveedor registrado exitosamente:', response);
+          this.snackBar.open(`¡Proveedor ${this.newProvider.firstName} ${this.newProvider.lastName} registrado exitosamente!`, 'Cerrar', {
+            duration: 4000
+          });
+          this.closeAddProviderModal();
+        },
+        error: (error) => {
+          console.error('❌ Error al registrar proveedor:', error);
+          const errorMessage = error.error?.message || error.message || 'Error al registrar el proveedor';
+          alert(errorMessage);
+        }
+      });
       
     } catch (error: any) {
       console.error('❌ Error al crear proveedor:', error);
@@ -105,6 +122,14 @@ export class ProveedoresComponent implements OnInit {
     } finally {
       this.isCreating = false;
     }
+  }
+
+  private formatDateForBackend(dateString: string): string {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.getFullYear() + '-' + 
+           String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(date.getDate()).padStart(2, '0') + ' 00:00:00';
   }
 
   private validateForm(): boolean {
