@@ -232,7 +232,29 @@
   border: 1px solid var(--dark-border);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   min-height: 500px;
+  max-height: calc(100vh - 180px); // Limitar altura máxima
+  overflow-y: auto; // Permitir scroll vertical
   transition: var(--transition);
+
+  // Estilos personalizados para scrollbar
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--purple-vibrant), var(--purple-light));
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--purple-light), var(--purple-vibrant));
+  }
 
   :global(.dark-theme) & {
     background-color: var(--dark-surface);
@@ -303,6 +325,19 @@
   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 2.5rem; // Aumentar espacio entre cajas
   padding: 1rem; // Padding adicional para el contenedor
+  width: 100%;
+  
+  // Mejorar comportamiento responsivo
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+  
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
