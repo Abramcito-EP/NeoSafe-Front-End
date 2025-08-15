@@ -57,15 +57,23 @@ export class CajasComponent implements OnInit, OnDestroy {
         return;
       }
       
+
       // Cargar cajas desde la API
       const apiBoxes = await this.safeBoxesService.getAllBoxes().toPromise();
-      
+
+      let cajasData: CajaData[] = [];
       if (apiBoxes && apiBoxes.length > 0) {
         // Convertir las cajas de la API al formato del frontend
-        this.cajasData = this.convertApiBoxesToCajaData(apiBoxes);
+        cajasData = this.convertApiBoxesToCajaData(apiBoxes);
+      }
+
+      // Filtrar según el rol: admin/proveedor solo ven cajas no reclamadas
+      const currentUser = this.authService.getCurrentUser();
+      const roleName = currentUser?.role?.name;
+      if (roleName === 'admin' || roleName === 'provider') {
+        this.cajasData = cajasData.filter(caja => !caja.isClaimed);
       } else {
-        // Si no hay cajas en la API, dejar arreglo vacío
-        this.cajasData = [];
+        this.cajasData = cajasData;
       }
 
       // Cargar datos de sensores
@@ -108,7 +116,7 @@ export class CajasComponent implements OnInit, OnDestroy {
         owner: box.owner,
         provider: box.provider,
         sensors: isCaja1 ? {
-          // Sensores activos solo para caja 1 (sin cerradura)
+          // Solo la caja SF-001 tiene sensores y cámara funcionales
           temperature: {
             status: 'normal',
             current: 22.5,
@@ -132,7 +140,7 @@ export class CajasComponent implements OnInit, OnDestroy {
             storageTotal: 100
           }
         } : {
-          // Sensores con valores en cero para las demás cajas (cámara no funcional)
+          // Las demás cajas no tienen sensores ni cámara funcionales
           temperature: {
             status: 'offline',
             current: 0,
@@ -148,7 +156,7 @@ export class CajasComponent implements OnInit, OnDestroy {
             history: [0, 0, 0, 0, 0]
           },
           camera: {
-            status: 'offline', // Cámara no funcional en demás cajas
+            status: 'offline',
             isRecording: false,
             resolution: 'N/A',
             fps: 0,

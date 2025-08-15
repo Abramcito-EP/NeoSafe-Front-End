@@ -170,7 +170,7 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   toggleRecording() {
-    // Solo funciona en caja 1 y si la cámara está activa
+    // Solo funciona en caja SF-001 si la cámara está activa
     if (this.cajaData.id === 'SF-001' && this.cajaData.sensors.camera.status === 'normal') {
       this.cajaData.sensors.camera.isRecording = !this.cajaData.sensors.camera.isRecording;
     } else {
