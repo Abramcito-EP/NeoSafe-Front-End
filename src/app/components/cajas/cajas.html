@@ -14,7 +14,11 @@
             <span>{{ isLoading ? 'Cargando...' : 'Actualizar' }}</span>
           </button>
           
-          <button class="btn btn-primary" (click)="addCaja()" aria-label="Agregar nueva caja de seguridad">
+          <button 
+            *ngIf="canAddCaja()"
+            class="btn btn-primary" 
+            (click)="addCaja()" 
+            aria-label="Agregar nueva caja de seguridad">
             <i class="fas fa-plus"></i>
             <span>Agregar Caja</span>
           </button>
@@ -51,8 +55,12 @@
           <i class="fas fa-shield-alt"></i>
         </div>
         <h3>No hay cajas configuradas</h3>
-        <p>Agrega tu primera caja de seguridad para comenzar</p>
-        <button class="add-caja-btn" (click)="addCaja()">
+        <p *ngIf="canAddCaja()">Agrega tu primera caja de seguridad para comenzar</p>
+        <p *ngIf="!canAddCaja()">No tienes cajas asignadas actualmente</p>
+        <button 
+          *ngIf="canAddCaja()"
+          class="add-caja-btn" 
+          (click)="addCaja()">
           <i class="fas fa-plus"></i>
           Agregar Caja
         </button>
