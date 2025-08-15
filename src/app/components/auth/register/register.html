@@ -42,8 +42,7 @@
             <div *ngIf="currentStep === 1" @slideInOut class="step-form">
               <form [formGroup]="step1Form" class="register-form">
                 <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Nombre</mat-label>
-                  <input matInput formControlName="name" placeholder="Tu nombre">
+                  <input matInput formControlName="name" placeholder="Nombre">
                   <span matPrefix class="input-icon">
                     <i class="fas fa-user"></i>
                   </span>
@@ -56,8 +55,7 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Apellido</mat-label>
-                  <input matInput formControlName="lastName" placeholder="Tu apellido">
+                  <input matInput formControlName="lastName" placeholder="Apellido">
                   <span matPrefix class="input-icon">
                     <i class="fas fa-user-tag"></i>
                   </span>
@@ -70,8 +68,7 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Fecha de nacimiento (opcional)</mat-label>
-                  <input matInput [matDatepicker]="picker" formControlName="birthDate">
+                  <input matInput [matDatepicker]="picker" formControlName="birthDate" placeholder="Fecha de nacimiento (opcional)">
                   <span matPrefix class="input-icon">
                     <i class="fas fa-birthday-cake"></i>
                   </span>
@@ -96,8 +93,7 @@
             <div *ngIf="currentStep === 2" @slideInOut class="step-form">
               <form [formGroup]="step2Form" (ngSubmit)="onSubmit()" class="register-form">
                 <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Correo electrónico</mat-label>
-                  <input matInput formControlName="email" type="email" placeholder="ejemplo@correo.com">
+                  <input matInput formControlName="email" type="email" placeholder="Correo electrónico">
                   <span matPrefix class="input-icon">
                     <i class="fas fa-envelope"></i>
                   </span>
@@ -110,8 +106,7 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="form-field">
-                  <mat-label>Contraseña</mat-label>
-                  <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+                  <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Contraseña">
                   <span matPrefix class="input-icon">
                     <i class="fas fa-lock"></i>
                   </span>

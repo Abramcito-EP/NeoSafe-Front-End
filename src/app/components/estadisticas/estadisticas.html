@@ -1,22 +1,33 @@
 <div class="page-container">
   <app-sidebar></app-sidebar>
   <div class="main-content">
+    <!-- Header Section -->
     <div class="content-header">
-      <div class="header-text">
-        <h1>Estadísticas</h1>
-        <p>Visualiza el rendimiento y actividad de tus cajas</p>
-      </div>
-      <div class="header-actions">
-        <select class="period-selector">
-          <option value="7d">Últimos 7 días</option>
-          <option value="30d" selected>Últimos 30 días</option>
-          <option value="90d">Últimos 90 días</option>
-          <option value="1y">Último año</option>
-        </select>
-        <button class="export-btn">
-          <i class="fas fa-download"></i>
-          Exportar
-        </button>
+      <div class="header-container">
+        <div class="header-info">
+          <h1>Estadísticas</h1>
+          <p>Visualiza el rendimiento y actividad de tus cajas de seguridad</p>
+        </div>
+        <div class="header-actions">
+          <div class="period-selector btn btn-secondary">
+            <i class="fas fa-calendar-alt"></i>
+            <select>
+              <option value="7d">Últimos 7 días</option>
+              <option value="30d" selected>Últimos 30 días</option>
+              <option value="90d">Últimos 90 días</option>
+              <option value="1y">Último año</option>
+            </select>
+          </div>
+          <button class="btn btn-primary export-btn">
+            <i class="fas fa-download"></i>
+            <span>Exportar</span>
+          </button>
+          
+          <div class="connection-indicator connected" role="status" aria-live="polite">
+            <i class="fas fa-chart-line"></i>
+            <span>Datos actualizados</span>
+          </div>
+        </div>
       </div>
     </div>
     

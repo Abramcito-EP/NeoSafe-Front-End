@@ -15,13 +15,30 @@ export interface SafeBoxResponse {
   name: string;
   modelId: number;
   codeNfc?: string;
-  claimCode: string;
+  claimCode?: string; // Solo disponible si no está reclamada
   isClaimed: boolean;
   status: string;
   ownerId?: number;
   providerId: number;
   createdAt: string;
   updatedAt: string;
+  owner?: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
+  provider?: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
+  sensors?: any[]; // Solo disponible si está reclamada
+}
+
+export interface ClaimBoxRequest {
+  claimCode: string;
 }
 
 @Injectable({
@@ -54,5 +71,9 @@ export class SafeBoxesService {
 
   generateClaimCode(id: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/${id}/generate-claim-code`, {});
+  }
+
+  claimBox(claimData: ClaimBoxRequest): Observable<{ message: string, box: SafeBoxResponse }> {
+    return this.http.post<{ message: string, box: SafeBoxResponse }>(`${this.apiUrl}/claim`, claimData);
   }
 }

@@ -3,7 +3,8 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { NavbarComponent } from '../shared/navbar/navbar';
-import { AuthService } from '../../services/auth'; // Asegúrate de que la ruta sea correcta
+import { AuthService } from '../../services/auth'; 
+
 
 @Component({
   selector: 'app-home',

@@ -18,9 +18,6 @@
         <a routerLink="/cajas" routerLinkActive="active-link" mat-button>
           <i class="fas fa-lock"></i> Mis Cajas
         </a>
-        <a routerLink="/estadisticas" routerLinkActive="active-link" mat-button>
-          <i class="fas fa-chart-bar"></i> Estadísticas
-        </a>
       </ng-container>
     </div>
 
@@ -81,9 +78,6 @@
       <ng-container *ngIf="isLoggedIn">
         <a mat-menu-item routerLink="/safes">
           <i class="fas fa-lock"></i> Mis Cajas
-        </a>
-        <a mat-menu-item routerLink="/stats">
-          <i class="fas fa-chart-bar"></i> Estadísticas
         </a>
         <a mat-menu-item routerLink="/profile">
           <i class="fas fa-user-cog"></i> Mi Perfil

@@ -19,33 +19,74 @@
 
     <!-- Estado compacto de la caja -->
     <div class="caja-status-compact neo-status-section">
-      <div class="status-item neo-status-item">
-        <i [ngClass]="cajaData.isLocked ? 'fas fa-lock neo-text-success' : 'fas fa-unlock neo-text-danger'"></i>
-        <span [ngClass]="cajaData.isLocked ? 'neo-text-success' : 'neo-text-danger'">
-          {{ cajaData.isLocked ? 'CERRADA' : 'ABIERTA' }}
-        </span>
+      <!-- Mostrar información de reclamo si no está reclamada -->
+      <div *ngIf="!cajaData.isClaimed" class="claim-info-section">
+        <div class="claim-status">
+          <i class="fas fa-key neo-text-warning"></i>
+          <span class="neo-text-warning">PENDIENTE DE RECLAMO</span>
+        </div>
+        <div class="claim-code">
+          <span class="neo-text-lavender">Código:</span>
+          <span class="claim-code-value neo-text-white">{{ cajaData.claimCode }}</span>
+          <button class="copy-code-btn" (click)="copyClaimCode()" title="Copiar código">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
       </div>
 
-      <div class="status-item neo-status-item">
-        <i class="fas fa-clock neo-icon-secondary"></i>
-        <span class="last-access-time neo-text-lavender">Última vez abierta</span>
-        <span class="last-access-time neo-text-lavender">{{ formatTimeAgo(cajaData.lastAccess) }}</span>
+      <!-- Mostrar información normal si está reclamada -->
+      <div *ngIf="cajaData.isClaimed" class="status-info-section">
+        <div class="status-item neo-status-item">
+          <i [ngClass]="cajaData.isLocked ? 'fas fa-lock neo-text-success' : 'fas fa-unlock neo-text-danger'"></i>
+          <span [ngClass]="cajaData.isLocked ? 'neo-text-success' : 'neo-text-danger'">
+            {{ cajaData.isLocked ? 'CERRADA' : 'ABIERTA' }}
+          </span>
+        </div>
+
+        <div class="status-item neo-status-item">
+          <i class="fas fa-user neo-icon-secondary"></i>
+          <span class="owner-info neo-text-lavender">Propietario:</span>
+          <span class="owner-name neo-text-white">{{ cajaData.owner?.firstName }} {{ cajaData.owner?.lastName }}</span>
+        </div>
+
+        <div class="status-item neo-status-item">
+          <i class="fas fa-clock neo-icon-secondary"></i>
+          <span class="last-access-time neo-text-lavender">Última vez abierta</span>
+          <span class="last-access-time neo-text-lavender">{{ formatTimeAgo(cajaData.lastAccess) }}</span>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Acciones principales -->
   <div class="caja-actions-section neo-actions-bg">
-    <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()">
-      <i class="fas fa-sensors"></i>
-      <span>Ver Sensores</span>
-      <span class="sensors-badge neo-badge-count">{{ getSensorCount() }}</span>
-    </button>
-    
-    <button class="action-button secondary neo-btn-secondary">
-      <i class="fas fa-cog"></i>
-      <span>Configurar</span>
-    </button>
+    <!-- Mostrar información de código si no está reclamada -->
+    <div *ngIf="!cajaData.isClaimed" class="unclaimed-actions">
+      <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()" *ngIf="hasSensors()">
+        <i class="fas fa-sensors"></i>
+        <span>Ver Sensores</span>
+        <span class="sensors-badge neo-badge-count">{{ getSensorCount() }}</span>
+      </button>
+      
+      <div class="claim-info-display" *ngIf="!hasSensors()">
+        <i class="fas fa-info-circle neo-text-info"></i>
+        <span class="neo-text-info">Caja disponible para reclamo</span>
+      </div>
+    </div>
+
+    <!-- Mostrar información de propietario si está reclamada -->
+    <div *ngIf="cajaData.isClaimed" class="claimed-actions">
+      <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()" *ngIf="hasSensors()">
+        <i class="fas fa-sensors"></i>
+        <span>Ver Sensores</span>
+        <span class="sensors-badge neo-badge-count">{{ getSensorCount() }}</span>
+      </button>
+      
+      <div class="claimed-info-display" *ngIf="!hasSensors()">
+        <i class="fas fa-user-check neo-text-success"></i>
+        <span class="neo-text-success">Reclamada por {{ cajaData.owner?.firstName }} {{ cajaData.owner?.lastName }}</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -61,7 +102,7 @@
         </div>
         <div>
           <h3 class="neo-text-primary">{{ cajaData.name }} - Sensores</h3>
-          <span class="sensors-count neo-text-meta">{{ getSensorCount() }} de 7 sensores activos</span>
+          <span class="sensors-count neo-text-meta">{{ getSensorCount() }} de 4 sensores activos</span>
         </div>
       </div>
       <button class="modal-close-btn neo-btn-close" (click)="closeSensorsModal()">
@@ -72,7 +113,7 @@
     <div class="sensors-modal-content neo-modal-content">
       <div class="sensors-grid-modal neo-sensors-grid">
         <div class="sensor-card-modal neo-sensor-card" 
-             *ngFor="let sensor of ['nfc', 'display', 'temperature', 'humidity', 'lock', 'weight', 'camera']"
+             *ngFor="let sensor of ['temperature', 'humidity', 'lock', 'camera']"
              (click)="openSensorModal(sensor)">
           
           <div class="sensor-icon-modal neo-sensor-icon">
@@ -124,48 +165,6 @@
 
     <div class="sensor-modal-content neo-modal-content">
       
-      <!-- NFC Details - Simplificado solo para estado activo/inactivo -->
-      <div *ngIf="selectedSensor === 'nfc'" class="sensor-detail-content neo-detail-section">
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Estado del NFC:</span>
-          <span class="neo-text-value" [ngClass]="getSensorData('nfc').isActive ? 'text-success' : 'text-danger'">
-            {{ getSensorData('nfc').isActive ? 'ACTIVO' : 'INACTIVO' }}
-          </span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Última actividad:</span>
-          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('nfc').lastActivity) }} atrás</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Tiempo en línea:</span>
-          <span class="neo-text-value">{{ getSensorData('nfc').uptime }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Lecturas totales:</span>
-          <span class="neo-text-value">{{ getSensorData('nfc').totalReads }}</span>
-        </div>
-      </div>
-
-      <!-- Display Details - Cambiar a sistema de PIN -->
-      <div *ngIf="selectedSensor === 'display'" class="sensor-detail-content neo-detail-section">
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Estado del PIN:</span>
-          <span class="neo-text-value">{{ getSensorData('display').pinStatus }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Último acceso:</span>
-          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('display').lastAccess) }} atrás</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Intentos fallidos:</span>
-          <span class="neo-text-value">{{ getSensorData('display').failedAttempts }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Tiempo activo:</span>
-          <span class="neo-text-value">{{ getSensorData('display').uptime }}</span>
-        </div>
-      </div>
-
       <!-- Temperature/Humidity Details -->
       <div *ngIf="selectedSensor === 'temperature' || selectedSensor === 'humidity'" class="sensor-detail-content neo-detail-section">
         <div class="detail-row neo-detail-row">
@@ -210,26 +209,6 @@
         </div>
       </div>
 
-      <!-- Weight Details - Cambiar a detección de contenido -->
-      <div *ngIf="selectedSensor === 'weight'" class="sensor-detail-content neo-detail-section">
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Estado del contenido:</span>
-          <span class="value-highlight neo-value-highlight">{{ getSensorData('weight').hasContent ? 'CON CONTENIDO' : 'VACÍA' }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Peso detectado:</span>
-          <span class="neo-text-value">{{ getSensorData('weight').current }} {{ getSensorData('weight').unit }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Umbral de detección:</span>
-          <span class="neo-text-value">{{ getSensorData('weight').threshold }} {{ getSensorData('weight').unit }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Última variación:</span>
-          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('weight').lastChange) }} atrás</span>
-        </div>
-      </div>
-
       <!-- Camera Details -->
       <div *ngIf="selectedSensor === 'camera'" class="sensor-detail-content neo-detail-section">
         <div class="detail-row neo-detail-row">
@@ -251,10 +230,17 @@
         <!-- Camera Preview -->
         <div class="camera-preview neo-camera-section">
           <div class="camera-feed neo-camera-feed">
-            <div class="camera-placeholder neo-camera-placeholder">
-              <i class="fas fa-camera"></i>
-              <p>Vista en vivo</p>
-              <small>Cámara {{ getSensorData('camera').resolution }}</small>
+            <img 
+              src="https://bride-ensemble-oak-ty.trycloudflare.com/?action=stream" 
+              alt="Vista en vivo de la cámara"
+              class="camera-stream"
+              (error)="onCameraError($event)"
+              (load)="onCameraLoad($event)"
+              loading="lazy">
+            <div class="camera-placeholder neo-camera-placeholder" *ngIf="cameraError" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <i class="fas fa-exclamation-triangle" style="color: #ff6b6b; font-size: 2rem; margin-bottom: 1rem;"></i>
+              <p style="color: #fff; margin: 0;">Error al cargar la cámara</p>
+              <small style="color: #ccc;">Verificando conexión...</small>
             </div>
             <div class="camera-status" *ngIf="getSensorData('camera').isRecording">
               <div class="rec-indicator"></div>

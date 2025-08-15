@@ -24,8 +24,7 @@
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Correo electrónico</mat-label>
-              <input matInput formControlName="email" type="email" placeholder="ejemplo@correo.com" (input)="onInputChange()">
+              <input matInput formControlName="email" type="email" placeholder="Correo electrónico" (input)="onInputChange()">
               <span matPrefix class="input-icon">
                 <i class="fas fa-envelope"></i>
               </span>
@@ -38,8 +37,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Contraseña</mat-label>
-              <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Tu contraseña" (input)="onInputChange()">
+              <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Contraseña" (input)="onInputChange()">
               <span matPrefix class="input-icon">
                 <i class="fas fa-lock"></i>
               </span>

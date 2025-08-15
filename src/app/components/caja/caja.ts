@@ -10,23 +10,22 @@ export interface CajaData {
   isLocked: boolean;
   lastAccess: string;
   batteryLevel: number;
+  // Información de reclamo
+  isClaimed: boolean;
+  claimCode?: string; // Solo si no está reclamada
+  owner?: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
+  provider?: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
   sensors: {
-    nfc: {
-      status: string;
-      isActive: boolean;
-      lastActivity: string;
-      uptime: string;
-      totalReads: number;
-      signalStrength: number;
-    };
-    display: {
-      status: string;
-      pinStatus: string;
-      lastAccess: string;
-      failedAttempts: number;
-      uptime: string;
-      brightness: number;
-    };
     temperature: {
       status: string;
       current: number;
@@ -47,15 +46,6 @@ export interface CajaData {
       attempts: number;
       lastUnlock: string;
       mechanism: string;
-    };
-    weight: {
-      status: string;
-      current: number;
-      baseline: number;
-      threshold: number;
-      unit: string;
-      hasContent: boolean;
-      lastChange: string;
     };
     camera: {
       status: string;
@@ -82,6 +72,7 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
   showAllSensors = false;
   selectedSensor: string | null = null;
   showSensorsModal: boolean = false;
+  cameraError: boolean = false;
   
   // Datos locales para el timestamp
   currentTime: string = '';
@@ -185,12 +176,9 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
 
   getSensorIcon(sensor: string): string {
     switch (sensor) {
-      case 'nfc': return 'fas fa-wifi';
-      case 'display': return 'fas fa-desktop';
       case 'temperature': return 'fas fa-thermometer-half';
       case 'humidity': return 'fas fa-tint';
       case 'lock': return 'fas fa-lock';
-      case 'weight': return 'fas fa-weight';
       case 'camera': return 'fas fa-camera';
       default: return 'fas fa-cog';
     }
@@ -198,12 +186,9 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
 
   getSensorTitle(sensor: string): string {
     switch (sensor) {
-      case 'nfc': return 'Sensor NFC';
-      case 'display': return 'Pantalla Digital';
       case 'temperature': return 'Sensor de Temperatura';
       case 'humidity': return 'Sensor de Humedad';
       case 'lock': return 'Sistema de Cerradura';
-      case 'weight': return 'Sensor de Peso';
       case 'camera': return 'Sistema de Cámara';
       default: return 'Sensor';
     }
@@ -251,12 +236,6 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
         return sensorData.current ? `${sensorData.current.toFixed(1)}°C` : 'N/A';
       case 'humidity':
         return sensorData.current ? `${Math.round(sensorData.current)}%` : 'N/A';
-      case 'weight':
-        return sensorData.current ? `${sensorData.current.toFixed(1)} ${sensorData.unit}` : 'N/A';
-      case 'nfc':
-        return `${sensorData.signalStrength}%`;
-      case 'display':
-        return `${sensorData.brightness}%`;
       case 'camera':
         return sensorData.isRecording ? 'GRABANDO' : 'ACTIVA';
       case 'lock':
@@ -270,6 +249,23 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
   hasSensorData(sensor: string): boolean {
     const data = this.getSensorData(sensor);
     return data && (data.current !== undefined && data.current !== null);
+  }
+
+  // Verificar si la caja tiene sensores disponibles para mostrar
+  hasSensors(): boolean {
+    return this.cajaData.sensors && Object.keys(this.cajaData.sensors).length > 0;
+  }
+
+  // Copiar código de reclamo al portapapeles
+  copyClaimCode() {
+    if (this.cajaData.claimCode) {
+      navigator.clipboard.writeText(this.cajaData.claimCode).then(() => {
+        console.log('Código copiado al portapapeles');
+        // Aquí podrías mostrar una notificación de éxito
+      }).catch(err => {
+        console.error('Error al copiar código:', err);
+      });
+    }
   }
 
   // Obtener el estado de salud general de la caja
@@ -287,5 +283,21 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
       return { status: 'warning', message: `${warningCount} sensor(es) con alerta` };
     }
     return { status: 'normal', message: 'Todos los sensores funcionan correctamente' };
+  }
+
+  // Manejar error de carga de la cámara
+  onCameraError(event: any) {
+    console.error('Error al cargar el stream de la cámara:', event);
+    this.cameraError = true;
+    // Intentar recargar después de 5 segundos
+    setTimeout(() => {
+      this.cameraError = false;
+    }, 5000);
+  }
+
+  // Manejar carga exitosa de la cámara
+  onCameraLoad(event: any) {
+    console.log('Stream de cámara cargado exitosamente');
+    this.cameraError = false;
   }
 }

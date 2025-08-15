@@ -27,13 +27,6 @@ export class CajasComponent implements OnInit, OnDestroy {
   isCreating: boolean = false;
   private subscriptions: Subscription[] = [];
 
-  // Credenciales para login rápido
-  loginCredentials = {
-    email: 'admin@example.com',
-    password: 'password123'
-  };
-  isLoggingIn = false;
-
   constructor(
     private sensorsService: SensorsService,
     private safeBoxesService: SafeBoxesService,
@@ -42,12 +35,14 @@ export class CajasComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadCajasFromAPI();
-    this.connectToSensors();
+    // En lugar de conectar WebSocket, iniciar polling
+    this.initializePolling();
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    this.sensorsService.disconnect();
+    // Detener polling en lugar de WebSocket
+    this.sensorsService.stopAllPolling();
   }
 
   private async loadCajasFromAPI() {
@@ -69,8 +64,8 @@ export class CajasComponent implements OnInit, OnDestroy {
         // Convertir las cajas de la API al formato del frontend
         this.cajasData = this.convertApiBoxesToCajaData(apiBoxes);
       } else {
-        // Si no hay cajas en la API, usar datos mock para desarrollo
-        this.initializeMockData();
+        // Si no hay cajas en la API, dejar arreglo vacío
+        this.cajasData = [];
       }
 
       // Cargar datos de sensores
@@ -85,10 +80,9 @@ export class CajasComponent implements OnInit, OnDestroy {
         this.showLoginModal = true;
         this.authService.removeToken();
       } else {
-        console.warn('Error de API, usando datos mock como fallback');
-        // Fallback a datos mock si falla la API
-        this.initializeMockData();
-        await this.loadInitialSensorData();
+        console.warn('Error de API, no se pueden cargar las cajas');
+        // No usar datos mock, dejar arreglo vacío
+        this.cajasData = [];
       }
     } finally {
       this.isLoading = false;
@@ -104,23 +98,12 @@ export class CajasComponent implements OnInit, OnDestroy {
       isLocked: true,
       lastAccess: box.updatedAt,
       batteryLevel: 100,
+      // Información de reclamo
+      isClaimed: box.isClaimed,
+      claimCode: box.claimCode,
+      owner: box.owner,
+      provider: box.provider,
       sensors: {
-        nfc: {
-          status: 'normal',
-          isActive: true,
-          lastActivity: box.updatedAt,
-          uptime: '0h 0m',
-          totalReads: 0,
-          signalStrength: 95
-        },
-        display: {
-          status: 'normal',
-          pinStatus: 'Configurado',
-          lastAccess: box.updatedAt,
-          failedAttempts: 0,
-          uptime: '0h 0m',
-          brightness: 80
-        },
         temperature: {
           status: 'normal',
           current: 22.5,
@@ -142,15 +125,6 @@ export class CajasComponent implements OnInit, OnDestroy {
           lastUnlock: box.updatedAt,
           mechanism: 'Electrónico + Mecánico'
         },
-        weight: {
-          status: 'normal',
-          current: 0,
-          baseline: 0,
-          threshold: 2.0,
-          unit: 'kg',
-          hasContent: false,
-          lastChange: box.updatedAt
-        },
         camera: {
           status: 'normal',
           isRecording: false,
@@ -161,80 +135,6 @@ export class CajasComponent implements OnInit, OnDestroy {
         }
       }
     }));
-  }
-
-  private initializeMockData() {
-    // Inicializar con datos base de las cajas
-    this.cajasData = [
-      {
-        id: 'SF-001',
-        name: 'Caja Fuerte Principal',
-        location: 'Sucursal Centro - Planta Baja',
-        status: 'normal',
-        isLocked: true,
-        lastAccess: new Date().toISOString(),
-        batteryLevel: 85,
-        sensors: {
-          nfc: { status: 'normal', isActive: true, lastActivity: new Date().toISOString(), uptime: '72h 15m', totalReads: 1250, signalStrength: 95 },
-          display: { status: 'normal', brightness: 80, pinStatus: 'Configurado', lastAccess: new Date().toISOString(), failedAttempts: 0, uptime: '72h 15m' },
-          temperature: { status: 'normal', current: 0, min: 18.0, max: 30.0, history: [] },
-          humidity: { status: 'normal', current: 0, min: 30, max: 60, history: [] },
-          lock: { status: 'normal', isLocked: true, attempts: 0, lastUnlock: new Date().toISOString(), mechanism: 'Electrónico + Mecánico' },
-          weight: {
-            status: 'normal', current: 0, baseline: 45.5, threshold: 2.0, unit: 'kg',
-            hasContent: false,
-            lastChange: ''
-          },
-          camera: { status: 'normal', isRecording: false, resolution: '1080p', fps: 30, storageUsed: 65, storageTotal: 100 }
-        }
-      },
-      {
-        id: 'SF-002',
-        name: 'Caja Fuerte Secundaria',
-        location: 'Sucursal Norte - Segundo Piso',
-        status: 'warning',
-        isLocked: true,
-        lastAccess: new Date(Date.now() - 3600000).toISOString(),
-        batteryLevel: 42,
-        sensors: {
-          nfc: { status: 'warning', isActive: true, lastActivity: new Date().toISOString(), uptime: '168h 32m', totalReads: 890, signalStrength: 78 },
-          display: { status: 'normal', brightness: 60, pinStatus: 'Configurado', lastAccess: new Date(Date.now() - 3600000).toISOString(), failedAttempts: 0, uptime: '168h 32m' },
-          temperature: { status: 'normal', current: 0, min: 18.0, max: 30.0, history: [] },
-          humidity: { status: 'warning', current: 0, min: 30, max: 60, history: [] },
-          lock: { status: 'normal', isLocked: true, attempts: 1, lastUnlock: new Date(Date.now() - 7200000).toISOString(), mechanism: 'Electrónico + Mecánico' },
-          weight: {
-            status: 'normal', current: 0, baseline: 32.1, threshold: 1.5, unit: 'kg',
-            hasContent: false,
-            lastChange: ''
-          },
-          camera: { status: 'normal', isRecording: true, resolution: '720p', fps: 24, storageUsed: 89, storageTotal: 50 }
-        }
-      },
-      {
-        id: 'SF-003',
-        name: 'Caja Fuerte Móvil',
-        location: 'Vehículo de Transporte #4',
-        status: 'critical',
-        isLocked: false,
-        lastAccess: new Date(Date.now() - 1800000).toISOString(),
-        batteryLevel: 15,
-        sensors: {
-          nfc: { status: 'offline', isActive: false, lastActivity: new Date(Date.now() - 3600000).toISOString(), uptime: '96h 42m', totalReads: 0, signalStrength: 0 },
-          display: { status: 'critical', brightness: 10, pinStatus: 'Bloqueado', lastAccess: new Date(Date.now() - 1800000).toISOString(), failedAttempts: 3, uptime: '96h 42m' },
-          temperature: { status: 'warning', current: 0, min: 15.0, max: 35.0, history: [] },
-          humidity: { status: 'critical', current: 0, min: 20, max: 70, history: [] },
-          lock: { status: 'critical', isLocked: false, attempts: 3, lastUnlock: new Date(Date.now() - 1800000).toISOString(), mechanism: 'Solo Electrónico' },
-          weight: {
-            status: 'warning', current: 0, baseline: 12.3, threshold: 1.0, unit: 'kg',
-            hasContent: false,
-            lastChange: ''
-          },
-          camera: { status: 'offline', isRecording: false, resolution: '480p', fps: 15, storageUsed: 95, storageTotal: 32 }
-        }
-      }
-    ];
-
-    this.loadInitialSensorData();
   }
 
   private async loadInitialSensorData() {
@@ -278,15 +178,28 @@ export class CajasComponent implements OnInit, OnDestroy {
     }
   }
 
-  private connectToSensors() {
-    this.sensorsService.connect();
+  /**
+   * Inicializa el sistema de polling para todas las cajas
+   */
+  private initializePolling() {
+    // Esperar a que las cajas se carguen antes de iniciar polling
+    if (this.cajasData.length === 0) {
+      // Reintentar después de un momento si no hay cajas cargadas
+      setTimeout(() => this.initializePolling(), 1000);
+      return;
+    }
 
-    this.subscriptions.push(
-      this.sensorsService.connected$.subscribe(connected => {
-        this.isConnected = connected;
-      })
-    );
+    console.log('🔄 Inicializando sistema de polling para cajas');
 
+    // Iniciar polling para cada caja (extraer ID numérico)
+    this.cajasData.forEach(caja => {
+      const numericId = this.extractNumericId(caja.id);
+      if (numericId) {
+        this.sensorsService.startPolling(numericId, 5000); // Polling cada 5 segundos
+      }
+    });
+
+    // Suscribirse a las actualizaciones de sensores
     this.subscriptions.push(
       this.sensorsService.temperature$.subscribe(data => {
         if (data) this.updateTemperatureInCajas(data);
@@ -299,11 +212,16 @@ export class CajasComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscriptions.push(
-      this.sensorsService.weight$.subscribe(data => {
-        if (data) this.updateWeightInCajas(data);
-      })
-    );
+    // Simular estado de conexión para polling
+    this.isConnected = true;
+  }
+
+  /**
+   * Extrae el ID numérico de un ID de caja con formato SF-001
+   */
+  private extractNumericId(cajaId: string): number | null {
+    const match = cajaId.match(/SF-(\d+)/);
+    return match ? parseInt(match[1]) : null;
   }
 
   private updateCajasWithSensorData(sensorsData: SensorsDataUpdate) {
@@ -324,12 +242,6 @@ export class CajasComponent implements OnInit, OnDestroy {
           caja.sensors.humidity.min, 
           caja.sensors.humidity.max
         );
-      }
-
-      if (sensorsData.weight) {
-        caja.sensors.weight.current = sensorsData.weight.value;
-        const weightDiff = Math.abs(sensorsData.weight.value - caja.sensors.weight.baseline);
-        caja.sensors.weight.status = weightDiff > caja.sensors.weight.threshold ? 'warning' : 'normal';
       }
 
       caja.status = this.calculateOverallStatus(caja);
@@ -368,15 +280,6 @@ export class CajasComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateWeightInCajas(data: any) {
-    this.cajasData.forEach(caja => {
-      caja.sensors.weight.current = data.value;
-      const weightDiff = Math.abs(data.value - caja.sensors.weight.baseline);
-      caja.sensors.weight.status = weightDiff > caja.sensors.weight.threshold ? 'warning' : 'normal';
-      caja.status = this.calculateOverallStatus(caja);
-    });
-  }
-
   private getSensorStatus(value: number, min: number, max: number): 'normal' | 'warning' | 'critical' {
     if (value < min || value > max) {
       const deviation = Math.min(Math.abs(value - min), Math.abs(value - max));
@@ -402,7 +305,16 @@ export class CajasComponent implements OnInit, OnDestroy {
   }
 
   refreshAllData() {
+    // Detener polling actual
+    this.sensorsService.stopAllPolling();
+    
+    // Recargar cajas desde API
     this.loadCajasFromAPI();
+    
+    // Reinicializar polling después de cargar las cajas
+    setTimeout(() => {
+      this.initializePolling();
+    }, 1000);
   }
 
   addCaja() {
@@ -415,6 +327,8 @@ export class CajasComponent implements OnInit, OnDestroy {
     this.newCajaName = '';
     this.isCreating = false;
   }
+
+
 
   async createCaja() {
     if (!this.newCajaName.trim()) {
@@ -450,7 +364,7 @@ export class CajasComponent implements OnInit, OnDestroy {
       const newBoxData: CreateSafeBoxRequest = {
         name: this.newCajaName.trim(),
         modelId: 1, // ID del modelo por defecto
-        sensorTypes: ['temperature', 'humidity', 'weight']
+        sensorTypes: ['temperature', 'humidity']
       };
 
       console.log('📤 Enviando datos a la API:', newBoxData);
@@ -472,23 +386,10 @@ export class CajasComponent implements OnInit, OnDestroy {
           isLocked: true,
           lastAccess: createdBox.createdAt,
           batteryLevel: 100,
+          isClaimed: createdBox.isClaimed,
+          claimCode: createdBox.claimCode,
+          provider: createdBox.provider,
           sensors: {
-            nfc: {
-              status: 'normal',
-              isActive: true,
-              lastActivity: createdBox.createdAt,
-              uptime: '0h 0m',
-              totalReads: 0,
-              signalStrength: 95
-            },
-            display: {
-              status: 'normal',
-              pinStatus: 'Configurado',
-              lastAccess: createdBox.createdAt,
-              failedAttempts: 0,
-              uptime: '0h 0m',
-              brightness: 80
-            },
             temperature: {
               status: 'normal',
               current: 22.5,
@@ -509,15 +410,6 @@ export class CajasComponent implements OnInit, OnDestroy {
               attempts: 0,
               lastUnlock: createdBox.createdAt,
               mechanism: 'Electrónico + Mecánico'
-            },
-            weight: {
-              status: 'normal',
-              current: 0,
-              baseline: 0,
-              threshold: 2.0,
-              unit: 'kg',
-              hasContent: false,
-              lastChange: createdBox.createdAt
             },
             camera: {
               status: 'normal',
@@ -599,73 +491,9 @@ export class CajasComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  // Método temporal para testing - remover en producción
-  private ensureAuthToken() {
-    if (!this.authService.getToken()) {
-      // Crear un token temporal para desarrollo
-      const tempToken = 'temp-token-for-development-' + Date.now();
-      console.log('🔧 DESARROLLO: Creando token temporal:', tempToken);
-      this.authService.setToken(tempToken);
-      
-      // Mostrar advertencia en consola
-      console.warn('⚠️ USANDO TOKEN TEMPORAL PARA DESARROLLO');
-      console.warn('⚠️ En producción, el usuario debe hacer login real');
-    }
-  }
-
-  // Método para login rápido con credenciales que sean admin/provider
-  async quickLogin() {
-    this.isLoggingIn = true;
-    
-    try {
-      console.log('🔑 Intentando login con:', this.loginCredentials);
-      const response = await this.authService.login(this.loginCredentials).toPromise();
-      
-      if (response && response.token) {
-        console.log('✅ Login exitoso:', response);
-        console.log('✅ Usuario logueado:', response.user);
-        console.log('✅ Rol del usuario:', response.user?.role?.name || 'Sin rol definido');
-        console.log('✅ ID del rol:', response.user?.role?.id || 'Sin ID de rol');
-        
-        this.authService.setToken(response.token);
-        this.showLoginModal = false;
-        
-        // Verificar que el usuario tenga permisos adecuados
-        if (response.user?.role?.name && ['admin', 'provider'].includes(response.user.role.name)) {
-          console.log('✅ Usuario con permisos adecuados para crear cajas');
-        } else {
-          console.warn('⚠️ Usuario sin permisos para crear cajas. Rol:', response.user?.role?.name || 'Sin rol definido');
-          alert('Tu usuario no tiene permisos para crear cajas. Necesitas ser administrador o proveedor.');
-        }
-        
-        // Recargar datos después del login
-        await this.loadCajasFromAPI();
-      } else {
-        console.error('❌ Respuesta de login inválida:', response);
-        alert('Error: No se recibió token del servidor');
-      }
-    } catch (error: any) {
-      console.error('❌ Error en login:', error);
-      
-      let errorMessage = 'Error al iniciar sesión';
-      if (error.status === 401) {
-        errorMessage = 'Credenciales incorrectas';
-      } else if (error.status === 422) {
-        errorMessage = 'Datos de login inválidos';
-      } else if (error.error?.message) {
-        errorMessage = error.error.message;
-      }
-      
-      alert(errorMessage);
-    } finally {
-      this.isLoggingIn = false;
-    }
-  }
-
   closeLoginModal() {
     this.showLoginModal = false;
-    // Usar datos mock si no se quiere hacer login
-    this.initializeMockData();
+    // Sin datos mock, permanecer en estado sin cajas hasta hacer login
   }
 }
 

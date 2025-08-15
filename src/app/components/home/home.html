@@ -29,9 +29,6 @@
         <a routerLink="/cajas" class="px-6 py-3 rounded-full bg-purple-vibrant text-white font-semibold flex items-center justify-center min-w-40 transform transition-all hover:bg-opacity-90 hover:-translate-y-1 hover:shadow-purple-glow">
           <i class="fas fa-box mr-2"></i> Mis Cajas
         </a>
-        <a routerLink="/estadisticas" class="px-6 py-3 rounded-full bg-dark-card text-white font-semibold border-2 border-purple-vibrant flex items-center justify-center min-w-40 transform transition-all hover:bg-dark-surface hover:-translate-y-1">
-          <i class="fas fa-chart-line mr-2"></i> Estadísticas
-        </a>
       </div>
     </div>
   </div>
@@ -49,10 +46,10 @@
       
       <div class="bg-dark-card rounded-xl p-6 shadow-dark-lg border border-dark-border transform transition-all hover:-translate-y-2 hover:shadow-purple-glow opacity-0 animate-fadeInUp" style="--order: 2; animation-delay: 0.2s;">
         <div class="w-16 h-16 bg-dark-surface rounded-full flex items-center justify-center mb-6">
-          <i class="fas fa-chart-line text-2xl text-purple-vibrant animate-glow"></i>
+          <i class="fas fa-eye text-2xl text-purple-vibrant animate-glow"></i>
         </div>
-        <h3 class="text-xl font-bold mb-3 text-purple-light">Estadísticas Avanzadas</h3>
-        <p class="text-dark-text-secondary">Monitoriza en tiempo real todos los datos de los sensores integrados para una seguridad óptima. Visualiza tendencias de uso y alertas en dashboards personalizables.</p>
+        <h3 class="text-xl font-bold mb-3 text-purple-light">Monitoreo en Tiempo Real</h3>
+        <p class="text-dark-text-secondary">Visualiza el estado de todos los sensores integrados de forma instantánea. Control completo de temperatura, humedad, cámara y sistema de bloqueo desde cualquier dispositivo.</p>
       </div>
       
       <div class="bg-dark-card rounded-xl p-6 shadow-dark-lg border border-dark-border transform transition-all hover:-translate-y-2 hover:shadow-purple-glow opacity-0 animate-fadeInUp" style="--order: 3; animation-delay: 0.3s;">
@@ -79,8 +76,16 @@
       <div class="flex flex-col md:flex-row gap-12 items-center about-flex">
         <div class="w-full md:w-1/2 opacity-0 animate-fadeInUp">
           <div class="relative rounded-xl overflow-hidden shadow-dark-lg">
-            <img src="" alt="NeoSafe Dispositivo" class="w-full h-auto transition-all hover:scale-105"
-                 onerror="this.src=''">
+            <img src="assets/images/purple-safe2.png" 
+               alt="Modern electronic safe with sleek metallic purple finish and digital control panel featuring illuminated buttons, set against a futuristic technological background with subtle circuit patterns and gradient lighting effects, conveying advanced security and innovation" 
+               class="w-full h-auto transition-all hover:scale-105"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <!-- Fallback si no se encuentra la imagen -->
+            <div class="hidden w-full h-80 bg-gradient-to-br from-purple-900 to-purple-600 flex-col items-center justify-center text-white rounded-xl">
+              <i class="fas fa-shield-alt text-6xl mb-4 text-purple-light"></i>
+              <h3 class="text-2xl font-bold mb-2">NeoSafe</h3>
+              <p class="text-purple-200">Sistema de Seguridad Inteligente</p>
+            </div>
             <div class="absolute -bottom-2 -right-2 w-24 h-24 bg-gradient-purple rounded-full opacity-30 blur-md"></div>
           </div>
         </div>
@@ -109,7 +114,7 @@
               <span>Estados de apertura y cierre</span>
             </li>
           </ul>
-          <p class="text-dark-text">La información de estos sensores es procesada en tiempo real, generando estadísticas útiles y alertas relevantes para asegurar que tus objetos de valor están siempre protegidos.</p>
+          <p class="text-dark-text">La información de estos sensores es procesada en tiempo real, generando alertas relevantes y notificaciones instantáneas para asegurar que tus objetos de valor están siempre protegidos.</p>
         </div>
       </div>
     </div>

@@ -36,11 +36,6 @@ export class SidebarComponent implements OnInit {
     // Inicialización básica del componente
   }
 
-  isAdmin(): boolean {
-    const currentUser = this.authService.getCurrentUser();
-    return currentUser?.role?.name === 'admin';
-  }
-
   logout(): void {
     // Primero limpiamos localmente la sesión
     this.authService.clearSession();

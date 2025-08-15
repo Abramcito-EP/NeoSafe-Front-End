@@ -137,15 +137,173 @@
 
 // Estados compactos - cambiar a 2 columnas
 .caja-status-compact {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  display: block;
   padding: 12px;
   background: var(--minimal-surface);
   border-radius: 6px;
   
   :global(.dark-theme) & {
     background: var(--dark-surface);
+  }
+}
+
+// Información de reclamo para cajas no reclamadas
+.claim-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  
+  .claim-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    
+    i {
+      font-size: 1.1rem;
+      color: #f39c12;
+    }
+    
+    span {
+      color: #f39c12;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  .claim-code {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 6px;
+    
+    :global(.dark-theme) & {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+    
+    .claim-code-value {
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--purple-vibrant);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+    
+    .copy-code-btn {
+      background: transparent;
+      border: none;
+      color: var(--purple-vibrant);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 3px;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba(139, 92, 246, 0.1);
+        transform: scale(1.1);
+      }
+      
+      i {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+// Información normal para cajas reclamadas
+.status-info-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  
+  .status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    font-size: 0.8rem;
+    
+    &:last-child {
+      grid-column: 1 / -1;
+    }
+    
+    i {
+      font-size: 1.1rem;
+      margin-bottom: 2px;
+    }
+    
+    .text-success {
+      color: #4caf50;
+    }
+    
+    .text-danger {
+      color: #f44336;
+    }
+    
+    .owner-info, .last-access-time {
+      font-size: 0.75rem;
+      color: var(--minimal-text-light);
+      
+      :global(.dark-theme) & {
+        color: var(--dark-text-secondary);
+      }
+    }
+    
+    .owner-name {
+      font-weight: 600;
+      color: var(--purple-vibrant);
+    }
+  }
+}
+
+// Acciones diferentes según estado de reclamo
+.unclaimed-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  
+  .claim-info-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #17a2b8;
+    font-size: 0.85rem;
+    font-weight: 500;
+    
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+.claimed-actions {
+  display: flex;
+  gap: 8px;
+  
+  .claimed-info-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #4caf50;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 12px;
+    flex: 1;
+    
+    i {
+      font-size: 1rem;
+    }
   }
 }
 
@@ -607,6 +765,13 @@
   justify-content: center;
 }
 
+.camera-stream {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px 6px 0 0;
+}
+
 .camera-placeholder {
   text-align: center;
   color: #666;
@@ -742,4 +907,38 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// Estilos para el estado de la cámara
+.camera-status {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.rec-indicator {
+  width: 8px;
+  height: 8px;
+  background: #ff0000;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
 }
