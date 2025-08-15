@@ -19,7 +19,387 @@
   <!-- Content Body -->
   <div class="content-body">
     <div class="container">
-      <p>Aquí se mostrará la lista de proveedores</p>
+      <!-- Loading State -->
+      <div class="loading-container" *ngIf="isLoading">
+        <div class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+          <span>Cargando proveedores...</span>
+        </div>
+      </div>
+
+      <!-- Providers List -->
+      <div class="providers-grid" *ngIf="!isLoading">
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="providers.length === 0">
+          <div class="empty-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>No hay proveedores registrados</h3>
+          <p>Comienza agregando tu primer proveedor al sistema</p>
+          <button class="btn btn-primary" (click)="openAddProviderModal()">
+            <i class="fas fa-plus"></i>
+            Agregar Primer Proveedor
+          </button>
+        </div>
+
+        <!-- Providers Cards -->
+        <div class="provider-card" *ngFor="let provider of providers">
+          <div class="provider-header">
+            <div class="provider-avatar">
+              <span>{{ getProviderInitials(provider) }}</span>
+            </div>
+            <div class="provider-info">
+              <h3>{{ provider.name }} {{ provider.lastName }}</h3>
+              <span class="provider-role">{{ provider.role }}</span>
+            </div>
+            <div class="provider-actions">
+              <button class="btn-action" title="Ver detalles" (click)="viewProviderDetails(provider)">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="btn-action" title="Editar" (click)="editProvider(provider)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn-action danger" title="Eliminar" (click)="deleteProvider(provider)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="provider-details">
+            <div class="detail-item">
+              <i class="fas fa-envelope"></i>
+              <span>{{ provider.email }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-birthday-cake"></i>
+              <span>{{ formatDisplayDate(provider.birthDate) }} ({{ calculateAge(provider.birthDate) }} años)</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-calendar-plus"></i>
+              <span>Registrado: {{ formatDisplayDate(provider.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Summary -->
+      <div class="stats-summary" *ngIf="!isLoading && providers.length > 0">
+        <div class="stat-card">
+          <div class="stat-number">{{ providers.length }}</div>
+          <div class="stat-label">Proveedores Activos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para agregar nuevo proveedor -->
+<div class="add-provider-modal-overlay" 
+     *ngIf="showAddProviderModal" 
+     (click)="closeAddProviderModal()"
+     (keydown.escape)="closeAddProviderModal()">
+  <div class="add-provider-modal" 
+       (click)="$event.stopPropagation()"
+       (keydown)="$event.stopPropagation()">
+    <div class="add-provider-modal-header">
+      <div class="modal-title">
+        <div class="provider-icon-small">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <div>
+          <h3>Agregar Nuevo Proveedor</h3>
+          <span>Configura un nuevo proveedor del sistema</span>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="closeAddProviderModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="add-provider-modal-content">
+      <form (ngSubmit)="createProvider()" #providerForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName" class="form-label">Nombre</label>
+            <input 
+              type="text" 
+              id="firstName"
+              [(ngModel)]="newProvider.firstName"
+              name="firstName"
+              class="form-input"
+              placeholder="Ej: Juan"
+              required
+              maxlength="50"
+              #firstNameInput="ngModel">
+            <div class="input-error" *ngIf="firstNameInput.invalid && firstNameInput.touched">
+              El nombre es requerido
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">Apellido</label>
+            <input 
+              type="text" 
+              id="lastName"
+              [(ngModel)]="newProvider.lastName"
+              name="lastName"
+              class="form-input"
+              placeholder="Ej: Pérez"
+              required
+              maxlength="50"
+              #lastNameInput="ngModel">
+            <div class="input-error" *ngIf="lastNameInput.invalid && lastNameInput.touched">
+              El apellido es requerido
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="birthDate" class="form-label">Fecha de Nacimiento</label>
+          <input 
+            type="date" 
+            id="birthDate"
+            [(ngModel)]="newProvider.birthDate"
+            name="birthDate"
+            class="form-input date-input"
+            min="1900-01-01"
+            max="2010-12-31"
+            required
+            #birthDateInput="ngModel">
+          <div class="input-error" *ngIf="birthDateInput.invalid && birthDateInput.touched">
+            La fecha de nacimiento es requerida (entre 1900 y 2010)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Correo Electrónico</label>
+          <input 
+            type="email" 
+            id="email"
+            [(ngModel)]="newProvider.email"
+            name="email"
+            class="form-input"
+            placeholder="ejemplo@correo.com"
+            required
+            #emailInput="ngModel">
+          <div class="input-error" *ngIf="emailInput.invalid && emailInput.touched">
+            <span *ngIf="emailInput.errors?.['required']">El correo electrónico es requerido</span>
+            <span *ngIf="emailInput.errors?.['email']">Ingresa un correo electrónico válido</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Contraseña</label>
+          <div class="password-input-container">
+            <input 
+              type="password" 
+              id="password"
+              [(ngModel)]="newProvider.password"
+              name="password"
+              class="form-input"
+              placeholder="Mínimo 6 caracteres"
+              required
+              minlength="6"
+              #passwordInput="ngModel">
+            <div class="password-hint">
+              <i class="fas fa-info-circle"></i>
+              <span>Contraseña por defecto: 123456 (puedes cambiarla)</span>
+            </div>
+          </div>
+          <div class="input-error" *ngIf="passwordInput.invalid && passwordInput.touched">
+            <span *ngIf="passwordInput.errors?.['required']">La contraseña es requerida</span>
+            <span *ngIf="passwordInput.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeAddProviderModal()">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </button>
+          <button type="submit" class="btn-create" [disabled]="providerForm.invalid || isCreating">
+            <i class="fas fa-user-plus" *ngIf="!isCreating"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isCreating"></i>
+            {{ isCreating ? 'Creando...' : 'Crear Proveedor' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para ver detalles del proveedor -->
+<div class="provider-details-modal-overlay" 
+     *ngIf="showProviderDetailsModal" 
+     (click)="closeProviderDetailsModal()"
+     (keydown.escape)="closeProviderDetailsModal()">
+  <div class="provider-details-modal" 
+       (click)="$event.stopPropagation()"
+       (keydown)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">
+        <div class="provider-icon-large">
+          <span>{{ selectedProvider ? getProviderInitials(selectedProvider) : '' }}</span>
+        </div>
+        <div>
+          <h3>Detalles del Proveedor</h3>
+          <span>{{ selectedProvider?.name }} {{ selectedProvider?.lastName }}</span>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="closeProviderDetailsModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-content" *ngIf="selectedProvider">
+      <div class="provider-info-grid">
+        <div class="info-item">
+          <div class="info-label">Nombre Completo</div>
+          <span>{{ selectedProvider.name }} {{ selectedProvider.lastName }}</span>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Correo Electrónico</div>
+          <span>{{ selectedProvider.email }}</span>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Fecha de Nacimiento</div>
+          <span>{{ formatDisplayDate(selectedProvider.birthDate) }}</span>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Edad</div>
+          <span>{{ calculateAge(selectedProvider.birthDate) }} años</span>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Rol</div>
+          <span class="role-badge">{{ selectedProvider.role }}</span>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Fecha de Registro</div>
+          <span>{{ formatDisplayDate(selectedProvider.createdAt) }}</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeProviderDetailsModal()">
+          <i class="fas fa-times"></i>
+          Cerrar
+        </button>
+        <button class="btn-primary" (click)="editProvider(selectedProvider); closeProviderDetailsModal()">
+          <i class="fas fa-edit"></i>
+          Editar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar proveedor -->
+<div class="edit-provider-modal-overlay" 
+     *ngIf="showEditProviderModal" 
+     (click)="closeEditProviderModal()"
+     (keydown.escape)="closeEditProviderModal()">
+  <div class="edit-provider-modal" 
+       (click)="$event.stopPropagation()"
+       (keydown)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title">
+        <div class="provider-icon-small">
+          <i class="fas fa-user-edit"></i>
+        </div>
+        <div>
+          <h3>Editar Proveedor</h3>
+          <span>Actualizar información del proveedor</span>
+        </div>
+      </div>
+      <button class="modal-close-btn" (click)="closeEditProviderModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-content">
+      <form (ngSubmit)="updateProvider()" #editProviderForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editFirstName" class="form-label">Nombre</label>
+            <input 
+              type="text" 
+              id="editFirstName"
+              [(ngModel)]="editProviderData.firstName"
+              name="editFirstName"
+              class="form-input"
+              placeholder="Ej: Juan"
+              required
+              maxlength="50"
+              #editFirstNameInput="ngModel">
+            <div class="input-error" *ngIf="editFirstNameInput.invalid && editFirstNameInput.touched">
+              El nombre es requerido
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editLastName" class="form-label">Apellido</label>
+            <input 
+              type="text" 
+              id="editLastName"
+              [(ngModel)]="editProviderData.lastName"
+              name="editLastName"
+              class="form-input"
+              placeholder="Ej: Pérez"
+              required
+              maxlength="50"
+              #editLastNameInput="ngModel">
+            <div class="input-error" *ngIf="editLastNameInput.invalid && editLastNameInput.touched">
+              El apellido es requerido
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editBirthDate" class="form-label">Fecha de Nacimiento</label>
+          <input 
+            type="date" 
+            id="editBirthDate"
+            [(ngModel)]="editProviderData.birthDate"
+            name="editBirthDate"
+            class="form-input date-input"
+            min="1900-01-01"
+            max="2010-12-31"
+            required
+            #editBirthDateInput="ngModel">
+          <div class="input-error" *ngIf="editBirthDateInput.invalid && editBirthDateInput.touched">
+            La fecha de nacimiento es requerida (entre 1900 y 2010)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editEmail" class="form-label">Correo Electrónico</label>
+          <input 
+            type="email" 
+            id="editEmail"
+            [(ngModel)]="editProviderData.email"
+            name="editEmail"
+            class="form-input"
+            placeholder="ejemplo@correo.com"
+            required
+            #editEmailInput="ngModel">
+          <div class="input-error" *ngIf="editEmailInput.invalid && editEmailInput.touched">
+            <span *ngIf="editEmailInput.errors?.['required']">El correo electrónico es requerido</span>
+            <span *ngIf="editEmailInput.errors?.['email']">Ingresa un correo electrónico válido</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeEditProviderModal()">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </button>
+          <button type="submit" class="btn-update" [disabled]="editProviderForm.invalid || isUpdating">
+            <i class="fas fa-save" *ngIf="!isUpdating"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isUpdating"></i>
+            {{ isUpdating ? 'Actualizando...' : 'Actualizar Proveedor' }}
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
