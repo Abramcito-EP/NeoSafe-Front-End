@@ -37,13 +37,6 @@
       <!-- Mostrar información normal si está reclamada -->
       <div *ngIf="cajaData.isClaimed" class="status-info-section">
         <div class="status-item neo-status-item">
-          <i [ngClass]="cajaData.isLocked ? 'fas fa-lock neo-text-success' : 'fas fa-unlock neo-text-danger'"></i>
-          <span [ngClass]="cajaData.isLocked ? 'neo-text-success' : 'neo-text-danger'">
-            {{ cajaData.isLocked ? 'CERRADA' : 'ABIERTA' }}
-          </span>
-        </div>
-
-        <div class="status-item neo-status-item">
           <i class="fas fa-user neo-icon-secondary"></i>
           <span class="owner-info neo-text-lavender">Propietario:</span>
           <span class="owner-name neo-text-white">{{ cajaData.owner?.firstName }} {{ cajaData.owner?.lastName }}</span>
@@ -113,7 +106,7 @@
     <div class="sensors-modal-content neo-modal-content">
       <div class="sensors-grid-modal neo-sensors-grid">
         <div class="sensor-card-modal neo-sensor-card" 
-             *ngFor="let sensor of ['temperature', 'humidity', 'lock', 'camera']"
+             *ngFor="let sensor of getSensorsList()"
              (click)="openSensorModal(sensor)">
           
           <div class="sensor-icon-modal neo-sensor-icon">
@@ -187,48 +180,26 @@
         </div>
       </div>
 
-      <!-- Lock Details -->
-      <div *ngIf="selectedSensor === 'lock'" class="sensor-detail-content neo-detail-section">
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Estado:</span>
-          <span class="neo-text-value" [ngClass]="getSensorData('lock').isLocked ? 'text-success' : 'text-danger'">
-            {{ getSensorData('lock').isLocked ? 'CERRADA' : 'ABIERTA' }}
-          </span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Mecanismo:</span>
-          <span class="neo-text-value">{{ getSensorData('lock').mechanism }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Intentos fallidos:</span>
-          <span class="neo-text-value">{{ getSensorData('lock').attempts }}</span>
-        </div>
-        <div class="detail-row neo-detail-row">
-          <span class="neo-text-label">Último desbloqueo:</span>
-          <span class="neo-text-value">{{ formatTimeAgo(getSensorData('lock').lastUnlock) }} atrás</span>
-        </div>
-      </div>
-
       <!-- Camera Details -->
       <div *ngIf="selectedSensor === 'camera'" class="sensor-detail-content neo-detail-section">
         <div class="detail-row neo-detail-row">
           <span class="neo-text-label">Estado:</span>
-          <span class="neo-text-value" [ngClass]="getSensorData('camera').isRecording ? 'text-danger' : 'text-success'">
-            <i [ngClass]="getSensorData('camera').isRecording ? 'fas fa-video' : 'fas fa-camera'"></i>
-            {{ getSensorData('camera').isRecording ? 'GRABANDO' : 'ACTIVA' }}
+          <span class="neo-text-value" [ngClass]="getSensorData('camera').status === 'normal' ? (getSensorData('camera').isRecording ? 'text-danger' : 'text-success') : 'text-muted'">
+            <i [ngClass]="getSensorData('camera').status === 'normal' ? (getSensorData('camera').isRecording ? 'fas fa-video' : 'fas fa-camera') : 'fas fa-camera-slash'"></i>
+            {{ getSensorData('camera').status === 'normal' ? (getSensorData('camera').isRecording ? 'GRABANDO' : 'ACTIVA') : 'NO DISPONIBLE' }}
           </span>
         </div>
         <div class="detail-row neo-detail-row">
           <span class="neo-text-label">Resolución:</span>
-          <span class="neo-text-value">{{ getSensorData('camera').resolution }} &#64; {{ getSensorData('camera').fps }}fps</span>
+          <span class="neo-text-value">{{ getSensorData('camera').resolution }}{{ getSensorData('camera').fps > 0 ? ' @ ' + getSensorData('camera').fps + 'fps' : '' }}</span>
         </div>
         <div class="detail-row neo-detail-row">
           <span class="neo-text-label">Almacenamiento:</span>
-          <span class="neo-text-value">{{ getSensorData('camera').storageUsed }}% ({{ getSensorData('camera').storageUsed }}/{{ getSensorData('camera').storageTotal }} GB)</span>
+          <span class="neo-text-value">{{ getSensorData('camera').storageTotal > 0 ? getSensorData('camera').storageUsed + '% (' + getSensorData('camera').storageUsed + '/' + getSensorData('camera').storageTotal + ' GB)' : 'No disponible' }}</span>
         </div>
         
-        <!-- Camera Preview -->
-        <div class="camera-preview neo-camera-section">
+        <!-- Camera Preview - Solo funcional para caja 1 -->
+        <div class="camera-preview neo-camera-section" *ngIf="cajaData.id === 'SF-001' && getSensorData('camera').status === 'normal'">
           <div class="camera-feed neo-camera-feed">
             <img 
               src="https://bride-ensemble-oak-ty.trycloudflare.com/?action=stream" 
@@ -262,6 +233,13 @@
               <i class="fas fa-download"></i>
             </button>
           </div>
+        </div>
+
+        <!-- Mensaje para cámaras no funcionales -->
+        <div class="camera-offline neo-camera-section" *ngIf="cajaData.id !== 'SF-001' || getSensorData('camera').status !== 'normal'" style="padding: 20px; text-align: center; background: rgba(0,0,0,0.05); border-radius: 8px; border: 2px dashed rgba(0,0,0,0.1);">
+          <i class="fas fa-camera-slash" style="color: #6c757d; font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+          <h4 style="color: #6c757d; margin-bottom: 0.5rem;">Cámara no disponible</h4>
+          <p style="color: #6c757d; margin: 0; opacity: 0.7;">Esta caja no tiene cámara funcional</p>
         </div>
       </div>
 

@@ -90,51 +90,74 @@ export class CajasComponent implements OnInit, OnDestroy {
   }
 
   private convertApiBoxesToCajaData(apiBoxes: SafeBoxResponse[]): CajaData[] {
-    return apiBoxes.map(box => ({
-      id: `SF-${String(box.id).padStart(3, '0')}`,
-      name: box.name,
-      location: 'Ubicación por configurar',
-      status: 'normal' as const,
-      isLocked: true,
-      lastAccess: box.updatedAt,
-      batteryLevel: 100,
-      // Información de reclamo
-      isClaimed: box.isClaimed,
-      claimCode: box.claimCode,
-      owner: box.owner,
-      provider: box.provider,
-      sensors: {
-        temperature: {
-          status: 'normal',
-          current: 22.5,
-          min: 18.0,
-          max: 30.0,
-          history: [22.1, 22.3, 22.4, 22.2, 22.5]
-        },
-        humidity: {
-          status: 'normal',
-          current: 45,
-          min: 30,
-          max: 60,
-          history: [44, 43, 45, 46, 45]
-        },
-        lock: {
-          status: 'normal',
-          isLocked: true,
-          attempts: 0,
-          lastUnlock: box.updatedAt,
-          mechanism: 'Electrónico + Mecánico'
-        },
-        camera: {
-          status: 'normal',
-          isRecording: false,
-          resolution: '1080p',
-          fps: 30,
-          storageUsed: 0,
-          storageTotal: 100
+    return apiBoxes.map(box => {
+      const boxId = `SF-${String(box.id).padStart(3, '0')}`;
+      const isCaja1 = boxId === 'SF-001';
+
+      return {
+        id: boxId,
+        name: box.name,
+        location: 'Ubicación por configurar',
+        status: isCaja1 ? 'normal' as const : 'offline' as const,
+        isLocked: true,
+        lastAccess: box.updatedAt,
+        batteryLevel: isCaja1 ? 100 : 0,
+        // Información de reclamo
+        isClaimed: box.isClaimed,
+        claimCode: box.claimCode,
+        owner: box.owner,
+        provider: box.provider,
+        sensors: isCaja1 ? {
+          // Sensores activos solo para caja 1 (sin cerradura)
+          temperature: {
+            status: 'normal',
+            current: 22.5,
+            min: 18.0,
+            max: 30.0,
+            history: [22.1, 22.3, 22.4, 22.2, 22.5]
+          },
+          humidity: {
+            status: 'normal',
+            current: 45,
+            min: 30,
+            max: 60,
+            history: [44, 43, 45, 46, 45]
+          },
+          camera: {
+            status: 'normal',
+            isRecording: false,
+            resolution: '1080p',
+            fps: 30,
+            storageUsed: 0,
+            storageTotal: 100
+          }
+        } : {
+          // Sensores con valores en cero para las demás cajas (cámara no funcional)
+          temperature: {
+            status: 'offline',
+            current: 0,
+            min: 18.0,
+            max: 30.0,
+            history: [0, 0, 0, 0, 0]
+          },
+          humidity: {
+            status: 'offline',
+            current: 0,
+            min: 30,
+            max: 60,
+            history: [0, 0, 0, 0, 0]
+          },
+          camera: {
+            status: 'offline', // Cámara no funcional en demás cajas
+            isRecording: false,
+            resolution: 'N/A',
+            fps: 0,
+            storageUsed: 0,
+            storageTotal: 0
+          }
         }
-      }
-    }));
+      };
+    });
   }
 
   private async loadInitialSensorData() {
@@ -179,7 +202,7 @@ export class CajasComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Inicializa el sistema de polling para todas las cajas
+   * Inicializa el sistema de polling solo para la caja 1
    */
   private initializePolling() {
     // Esperar a que las cajas se carguen antes de iniciar polling
@@ -189,26 +212,25 @@ export class CajasComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('🔄 Inicializando sistema de polling para cajas');
+    console.log('🔄 Inicializando sistema de polling solo para caja 1');
 
-    // Iniciar polling para cada caja (extraer ID numérico)
-    this.cajasData.forEach(caja => {
-      const numericId = this.extractNumericId(caja.id);
-      if (numericId) {
-        this.sensorsService.startPolling(numericId, 5000); // Polling cada 5 segundos
-      }
-    });
+    // Iniciar polling SOLO para la caja 1 (ID: SF-001)
+    const caja1 = this.cajasData.find(caja => caja.id === 'SF-001');
+    if (caja1) {
+      this.sensorsService.startPolling(1, 5000); // Polling cada 5 segundos solo para caja 1
+      console.log('✅ Polling iniciado para caja 1');
+    }
 
-    // Suscribirse a las actualizaciones de sensores
+    // Suscribirse a las actualizaciones de sensores (solo afectará a caja 1)
     this.subscriptions.push(
       this.sensorsService.temperature$.subscribe(data => {
-        if (data) this.updateTemperatureInCajas(data);
+        if (data) this.updateTemperatureInCaja1(data);
       })
     );
 
     this.subscriptions.push(
       this.sensorsService.humidity$.subscribe(data => {
-        if (data) this.updateHumidityInCajas(data);
+        if (data) this.updateHumidityInCaja1(data);
       })
     );
 
@@ -280,6 +302,41 @@ export class CajasComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Métodos específicos para actualizar solo la caja 1
+  private updateTemperatureInCaja1(data: any) {
+    const caja1 = this.cajasData.find(caja => caja.id === 'SF-001');
+    if (caja1) {
+      caja1.sensors.temperature.current = data.value;
+      caja1.sensors.temperature.history = [
+        ...caja1.sensors.temperature.history.slice(-4),
+        data.value
+      ];
+      caja1.sensors.temperature.status = this.getSensorStatus(
+        data.value,
+        caja1.sensors.temperature.min,
+        caja1.sensors.temperature.max
+      );
+      caja1.status = this.calculateOverallStatus(caja1);
+    }
+  }
+
+  private updateHumidityInCaja1(data: any) {
+    const caja1 = this.cajasData.find(caja => caja.id === 'SF-001');
+    if (caja1) {
+      caja1.sensors.humidity.current = data.value;
+      caja1.sensors.humidity.history = [
+        ...caja1.sensors.humidity.history.slice(-4),
+        data.value
+      ];
+      caja1.sensors.humidity.status = this.getSensorStatus(
+        data.value,
+        caja1.sensors.humidity.min,
+        caja1.sensors.humidity.max
+      );
+      caja1.status = this.calculateOverallStatus(caja1);
+    }
+  }
+
   private getSensorStatus(value: number, min: number, max: number): 'normal' | 'warning' | 'critical' {
     if (value < min || value > max) {
       const deviation = Math.min(Math.abs(value - min), Math.abs(value - max));
@@ -318,6 +375,14 @@ export class CajasComponent implements OnInit, OnDestroy {
   }
 
   addCaja() {
+    // Verificar si el usuario puede crear cajas
+    if (!this.canCreateBoxes()) {
+      const currentUser = this.authService.getCurrentUser();
+      const userRole = currentUser?.role?.name || 'sin rol definido';
+      alert(`No tienes permisos para crear cajas de seguridad.\nTu rol actual: ${userRole}\nSolo administradores y proveedores pueden crear cajas.`);
+      return;
+    }
+
     this.showAddCajaModal = true;
     this.newCajaName = '';
   }
@@ -332,6 +397,15 @@ export class CajasComponent implements OnInit, OnDestroy {
 
   async createCaja() {
     if (!this.newCajaName.trim()) {
+      return;
+    }
+
+    // Verificar permisos antes de crear
+    if (!this.canCreateBoxes()) {
+      const currentUser = this.authService.getCurrentUser();
+      const userRole = currentUser?.role?.name || 'sin rol definido';
+      alert(`No tienes permisos para crear cajas de seguridad.\nTu rol actual: ${userRole}\nSolo administradores y proveedores pueden crear cajas.`);
+      this.closeAddCajaModal();
       return;
     }
 
@@ -382,43 +456,37 @@ export class CajasComponent implements OnInit, OnDestroy {
           id: `SF-${String(createdBox.id).padStart(3, '0')}`,
           name: createdBox.name,
           location: 'Ubicación por configurar',
-          status: 'normal',
+          status: 'offline', // Nuevas cajas inician como offline excepto caja 1
           isLocked: true,
           lastAccess: createdBox.createdAt,
-          batteryLevel: 100,
+          batteryLevel: 0, // Nuevas cajas inician con batería en 0 excepto caja 1
           isClaimed: createdBox.isClaimed,
           claimCode: createdBox.claimCode,
           provider: createdBox.provider,
           sensors: {
             temperature: {
-              status: 'normal',
-              current: 22.5,
+              status: 'offline',
+              current: 0,
               min: 18.0,
               max: 30.0,
-              history: [22.1, 22.3, 22.4, 22.2, 22.5]
+              history: [0, 0, 0, 0, 0]
             },
             humidity: {
-              status: 'normal',
-              current: 45,
+              status: 'offline',
+              current: 0,
               min: 30,
               max: 60,
-              history: [44, 43, 45, 46, 45]
-            },
-            lock: {
-              status: 'normal',
-              isLocked: true,
-              attempts: 0,
-              lastUnlock: createdBox.createdAt,
-              mechanism: 'Electrónico + Mecánico'
+              history: [0, 0, 0, 0, 0]
             },
             camera: {
-              status: 'normal',
+              status: 'offline', // Cámara no funcional para nuevas cajas
               isRecording: false,
-              resolution: '1080p',
-              fps: 30,
+              resolution: 'N/A',
+              fps: 0,
               storageUsed: 0,
-              storageTotal: 100
+              storageTotal: 0
             }
+            // Sin lock por defecto
           }
         };
 
@@ -494,6 +562,18 @@ export class CajasComponent implements OnInit, OnDestroy {
   closeLoginModal() {
     this.showLoginModal = false;
     // Sin datos mock, permanecer en estado sin cajas hasta hacer login
+  }
+
+  // Verificar si el usuario actual puede crear cajas
+  canCreateBoxes(): boolean {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser || !currentUser.role) {
+      return false;
+    }
+    
+    // Solo permitir a administradores y proveedores crear cajas
+    // Los usuarios con rol 'user' no pueden crear cajas
+    return currentUser.role.name !== 'user';
   }
 }
 

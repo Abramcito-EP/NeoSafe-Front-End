@@ -14,7 +14,11 @@
             <span>{{ isLoading ? 'Cargando...' : 'Actualizar' }}</span>
           </button>
           
-          <button class="btn btn-primary" (click)="addCaja()" aria-label="Agregar nueva caja de seguridad">
+          <button class="btn btn-primary" 
+                  (click)="addCaja()" 
+                  [disabled]="!canCreateBoxes()"
+                  [title]="canCreateBoxes() ? 'Agregar nueva caja de seguridad' : 'No tienes permisos para crear cajas (solo administradores y proveedores)'"
+                  aria-label="Agregar nueva caja de seguridad">
             <i class="fas fa-plus"></i>
             <span>Agregar Caja</span>
           </button>
@@ -51,11 +55,22 @@
           <i class="fas fa-shield-alt"></i>
         </div>
         <h3>No hay cajas configuradas</h3>
-        <p>Agrega tu primera caja de seguridad para comenzar</p>
-        <button class="add-caja-btn" (click)="addCaja()">
+        <p *ngIf="canCreateBoxes()">Agrega tu primera caja de seguridad para comenzar</p>
+        <p *ngIf="!canCreateBoxes()">Las cajas de seguridad aparecerán aquí cuando un administrador o proveedor las configure</p>
+        
+        <button class="add-caja-btn" 
+                (click)="addCaja()"
+                [disabled]="!canCreateBoxes()"
+                [title]="canCreateBoxes() ? 'Agregar nueva caja de seguridad' : 'No tienes permisos para crear cajas (solo administradores y proveedores)'"
+                *ngIf="canCreateBoxes()">
           <i class="fas fa-plus"></i>
           Agregar Caja
         </button>
+        
+        <div class="permission-info" *ngIf="!canCreateBoxes()" style="margin-top: 20px; padding: 15px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 4px solid #ffc107;">
+          <i class="fas fa-info-circle" style="color: #ffc107; margin-right: 8px;"></i>
+          <span style="color: #856404;">Solo administradores y proveedores pueden crear cajas de seguridad</span>
+        </div>
       </div>
     </div>
   </div>

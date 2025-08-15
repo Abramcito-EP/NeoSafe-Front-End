@@ -40,14 +40,14 @@ export interface CajaData {
       max: number;
       history: number[];
     };
-    lock: {
+    lock?: {  // Hacer lock opcional también
       status: string;
       isLocked: boolean;
       attempts: number;
       lastUnlock: string;
       mechanism: string;
     };
-    camera: {
+    camera: {  // Cámara obligatoria (simulada para todas las cajas)
       status: string;
       isRecording: boolean;
       resolution: string;
@@ -170,8 +170,12 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   toggleRecording() {
-    // En un entorno real, esto haría una llamada a la API
-    this.cajaData.sensors.camera.isRecording = !this.cajaData.sensors.camera.isRecording;
+    // Solo funciona en caja 1 y si la cámara está activa
+    if (this.cajaData.id === 'SF-001' && this.cajaData.sensors.camera.status === 'normal') {
+      this.cajaData.sensors.camera.isRecording = !this.cajaData.sensors.camera.isRecording;
+    } else {
+      console.warn('Cámara no disponible en esta caja');
+    }
   }
 
   getSensorIcon(sensor: string): string {
@@ -222,9 +226,10 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
 
   getSensorCount(): number {
     const sensors = Object.keys(this.cajaData.sensors);
-    return sensors.filter(sensor => 
-      this.getSensorStatus(sensor) === 'normal' || this.getSensorStatus(sensor) === 'warning'
-    ).length;
+    return sensors.filter(sensor => {
+      const sensorData = this.getSensorData(sensor);
+      return sensorData && (this.getSensorStatus(sensor) === 'normal' || this.getSensorStatus(sensor) === 'warning');
+    }).length;
   }
 
   getSensorDisplayValue(sensor: string): string {
@@ -237,12 +242,18 @@ export class CajaComponent implements OnInit, OnDestroy, OnChanges {
       case 'humidity':
         return sensorData.current ? `${Math.round(sensorData.current)}%` : 'N/A';
       case 'camera':
+        if (sensorData.status === 'offline') return 'NO DISPONIBLE';
         return sensorData.isRecording ? 'GRABANDO' : 'ACTIVA';
       case 'lock':
-        return sensorData.isLocked ? 'CERRADA' : 'ABIERTA';
+        return sensorData && sensorData.isLocked !== undefined ? (sensorData.isLocked ? 'CERRADA' : 'ABIERTA') : 'N/A';
       default:
         return '';
     }
+  }
+
+  // Obtener lista de sensores disponibles (sin lock, siempre con cámara)
+  getSensorsList(): string[] {
+    return ['temperature', 'humidity', 'camera'];
   }
 
   // Verificar si hay datos de sensores disponibles
