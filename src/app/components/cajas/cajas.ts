@@ -364,7 +364,7 @@ export class CajasComponent implements OnInit, OnDestroy {
       const newBoxData: CreateSafeBoxRequest = {
         name: this.newCajaName.trim(),
         modelId: 1, // ID del modelo por defecto
-        sensorTypes: ['temperature', 'humidity']
+        sensorTypes: ['temperature', 'humidity', 'weight']
       };
 
       console.log('📤 Enviando datos a la API:', newBoxData);
