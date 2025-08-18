@@ -55,13 +55,13 @@
   <div class="caja-actions-section neo-actions-bg">
     <!-- Mostrar información de código si no está reclamada -->
     <div *ngIf="!cajaData.isClaimed" class="unclaimed-actions">
-      <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()" *ngIf="cajaData.id === 'SF-001' && hasSensors()">
+      <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()" *ngIf="hasSensors()">
         <i class="fas fa-sensors"></i>
         <span>Ver Sensores</span>
         <span class="sensors-badge neo-badge-count">{{ getSensorCount() }}</span>
       </button>
       
-      <div class="claim-info-display" *ngIf="cajaData.id !== 'SF-001' || !hasSensors()">
+      <div class="claim-info-display" *ngIf="!hasSensors()">
         <i class="fas fa-info-circle neo-text-info"></i>
         <span class="neo-text-info">Caja disponible para reclamo</span>
       </div>
@@ -69,13 +69,13 @@
 
     <!-- Mostrar información de propietario si está reclamada -->
     <div *ngIf="cajaData.isClaimed" class="claimed-actions">
-      <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()" *ngIf="cajaData.id === 'SF-001' && hasSensors()">
+      <button class="action-button primary neo-btn-primary" (click)="openSensorsModal()" *ngIf="hasSensors()">
         <i class="fas fa-sensors"></i>
         <span>Ver Sensores</span>
         <span class="sensors-badge neo-badge-count">{{ getSensorCount() }}</span>
       </button>
       
-      <div class="claimed-info-display" *ngIf="cajaData.id !== 'SF-001' || !hasSensors()">
+      <div class="claimed-info-display" *ngIf="!hasSensors()">
         <i class="fas fa-user-check neo-text-success"></i>
         <span class="neo-text-success">Reclamada por {{ cajaData.owner?.firstName }} {{ cajaData.owner?.lastName }}</span>
       </div>
@@ -202,7 +202,7 @@
         <div class="camera-preview neo-camera-section" *ngIf="cajaData.id === 'SF-001' && getSensorData('camera').status === 'normal'">
           <div class="camera-feed neo-camera-feed">
             <img 
-              src="https://bride-ensemble-oak-ty.trycloudflare.com/?action=stream" 
+              src="https://drivers-thought-property-adsl.trycloudflare.com/?action=stream" 
               alt="Vista en vivo de la cámara"
               class="camera-stream"
               (error)="onCameraError($event)"
