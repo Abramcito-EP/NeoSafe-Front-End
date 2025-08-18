@@ -41,8 +41,10 @@ export class CajasComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    // Detener polling en lugar de WebSocket
+    // Detener polling de sensores
     this.sensorsService.stopAllPolling();
+    // Detener polling de cajas
+    this.safeBoxesService.stopPolling();
   }
 
   private async loadCajasFromAPI() {
@@ -210,40 +212,110 @@ export class CajasComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Inicializa el sistema de polling solo para la caja 1
+   * Inicializa el sistema de polling solo para la caja 1 y polling de cajas para administradores
    */
   private initializePolling() {
-    // Esperar a que las cajas se carguen antes de iniciar polling
-    if (this.cajasData.length === 0) {
-      // Reintentar después de un momento si no hay cajas cargadas
-      setTimeout(() => this.initializePolling(), 1000);
-      return;
+    console.log('🔄 Inicializando sistema de polling');
+
+    // Iniciar polling de cajas INMEDIATAMENTE para administradores y proveedores
+    const currentUser = this.authService.getCurrentUser();
+    const roleName = currentUser?.role?.name;
+    if (roleName === 'admin' || roleName === 'provider') {
+      console.log('🔄 Iniciando polling de cajas para', roleName);
+      this.safeBoxesService.startPolling(5000); // Polling cada 5 segundos
+      
+      // Suscribirse a los cambios en las cajas
+      this.subscriptions.push(
+        this.safeBoxesService.boxes$.subscribe(apiBoxes => {
+          this.updateCajasFromPolling(apiBoxes);
+        })
+      );
     }
 
-    console.log('🔄 Inicializando sistema de polling solo para caja 1');
-
-    // Iniciar polling SOLO para la caja 1 (ID: SF-001)
-    const caja1 = this.cajasData.find(caja => caja.id === 'SF-001');
-    if (caja1) {
-      this.sensorsService.startPolling(1, 5000); // Polling cada 5 segundos solo para caja 1
-      console.log('✅ Polling iniciado para caja 1');
-    }
-
-    // Suscribirse a las actualizaciones de sensores (solo afectará a caja 1)
-    this.subscriptions.push(
-      this.sensorsService.temperature$.subscribe(data => {
-        if (data) this.updateTemperatureInCaja1(data);
-      })
-    );
-
-    this.subscriptions.push(
-      this.sensorsService.humidity$.subscribe(data => {
-        if (data) this.updateHumidityInCaja1(data);
-      })
-    );
+    // Iniciar polling de sensores solo si hay caja 1
+    this.initializeSensorPolling();
 
     // Simular estado de conexión para polling
     this.isConnected = true;
+  }
+
+  /**
+   * Inicializa el polling de sensores solo para la caja 1
+   */
+  private initializeSensorPolling() {
+    // Buscar la caja 1 en los datos actuales
+    const caja1 = this.cajasData.find(caja => caja.id === 'SF-001');
+    if (caja1) {
+      console.log('✅ Caja 1 encontrada, iniciando polling de sensores');
+      this.sensorsService.startPolling(1, 5000); // Polling cada 5 segundos solo para caja 1
+      
+      // Suscribirse a las actualizaciones de sensores (solo afectará a caja 1)
+      this.subscriptions.push(
+        this.sensorsService.temperature$.subscribe(data => {
+          if (data) this.updateTemperatureInCaja1(data);
+        })
+      );
+
+      this.subscriptions.push(
+        this.sensorsService.humidity$.subscribe(data => {
+          if (data) this.updateHumidityInCaja1(data);
+        })
+      );
+    } else {
+      console.log('⏳ Caja 1 no encontrada aún, reintentando en 2 segundos');
+      // Reintentar después de un momento si no hay caja 1
+      setTimeout(() => this.initializeSensorPolling(), 2000);
+    }
+  }
+
+  /**
+   * Actualiza las cajas basado en los datos del polling
+   */
+  private updateCajasFromPolling(apiBoxes: SafeBoxResponse[]) {
+    const currentUser = this.authService.getCurrentUser();
+    const roleName = currentUser?.role?.name;
+    
+    if (roleName === 'admin' || roleName === 'provider') {
+      // Convertir datos de la API
+      let cajasData = this.convertApiBoxesToCajaData(apiBoxes);
+      
+      // Filtrar cajas no reclamadas para admin/proveedor
+      const filteredCajas = cajasData.filter(caja => !caja.isClaimed);
+      
+      // Preservar datos de sensores existentes para todas las cajas
+      filteredCajas.forEach(newCaja => {
+        const existingCaja = this.cajasData.find(caja => caja.id === newCaja.id);
+        if (existingCaja) {
+          // Preservar los datos de sensores actuales y estado
+          newCaja.sensors = existingCaja.sensors;
+          newCaja.status = existingCaja.status;
+        }
+      });
+      
+      // Detectar nuevas cajas creadas
+      const currentIds = this.cajasData.map(caja => caja.id);
+      const newIds = filteredCajas.map(caja => caja.id);
+      const addedBoxes = newIds.filter(id => !currentIds.includes(id));
+      const removedBoxes = currentIds.filter(id => !newIds.includes(id));
+      
+      if (addedBoxes.length > 0) {
+        console.log('📦 ¡Nuevas cajas detectadas!', addedBoxes);
+        // Si se creó la caja 1 y no teníamos polling de sensores, iniciarlo
+        if (addedBoxes.includes('SF-001')) {
+          console.log('🎯 ¡Caja 1 creada! Iniciando polling de sensores...');
+          this.initializeSensorPolling();
+        }
+      }
+      
+      if (removedBoxes.length > 0) {
+        console.log('📦 Cajas removidas (reclamadas):', removedBoxes);
+      }
+      
+      // Actualizar la lista de cajas
+      this.cajasData = filteredCajas;
+      
+      console.log(`📦 Cajas actualizadas desde polling: ${this.cajasData.length} cajas visibles`);
+    }
   }
 
   /**
